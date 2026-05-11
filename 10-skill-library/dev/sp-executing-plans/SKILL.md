@@ -1,5 +1,6 @@
 # Skill: sp-executing-plans
-> 来源：obra/superpowers · 适配：Moonz 开发场景 · 版本：v1.0
+> 来源：obra/superpowers · 适配：Moonz 开发场景 · 版本：v1.1
+> 灵感来源：Anthropic claude-quickstarts/autonomous-coding（两 Agent 模式 + 跨会话持久化）
 > ⚠️ 子 Agent 并行执行需要 Claude Code CLI；在 Cowork 中使用顺序执行模式
 
 ## 定位
@@ -80,3 +81,61 @@ Controller 读取计划
 □ 提交历史清晰（每 Task 一个语义化 commit）
 □ 更新 memory-update（working memory 记录完成情况）
 ```
+
+---
+
+## 跨会话持久化协议（v1.1 新增）
+
+> 来源：Anthropic autonomous-coding 两 Agent 模式
+> 解决问题：长任务跨多个会话时的"上次做到哪了"问题
+
+### 进度文件 tasks-progress.json
+
+在项目根目录创建 `tasks-progress.json`，作为跨会话的状态锚点：
+
+```json
+{
+  "project": "项目名称",
+  "plan_file": "path/to/sp-plan.md",
+  "created_at": "2026-05-11",
+  "last_updated": "2026-05-11",
+  "tasks": [
+    {
+      "id": "T001",
+      "title": "任务标题",
+      "status": "pending|in_progress|review_1_pass|completed|blocked",
+      "commit": null,
+      "notes": ""
+    }
+  ]
+}
+```
+
+### 会话启动协议
+
+每次新会话开始时，**先读进度文件**：
+
+```
+1. 读取 tasks-progress.json
+2. 找到第一个 status != "completed" 的任务
+3. 读取对应的 commit 节点了解已完成上下文
+4. 从断点继续，无需用户重新介绍背景
+```
+
+### 任务完成时更新进度
+
+每个 Task 完成 + Review 通过后，立即：
+1. 更新 `tasks-progress.json` 中该 task 的 status 为 `"completed"`
+2. 记录 commit hash
+3. `git commit` 提交（含 tasks-progress.json）
+
+### 两 Agent 模式（大型项目，CLI 环境）
+
+参考 autonomous-coding 的 Initializer + Coding Agent 分工：
+
+| Agent | 职责 | 触发时机 |
+|-------|------|---------|
+| **Initializer** | 读 Spec，生成 tasks-progress.json，设置项目骨架，初始化 git | 项目开始时（Session 1） |
+| **Coding Agent** | 读 tasks-progress.json，从断点继续，逐任务执行 + Review | 后续每个会话 |
+
+此模式在 Claude Code CLI 中通过子 Agent 实现。Cowork 中手动维护 tasks-progress.json 即可。

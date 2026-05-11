@@ -1,5 +1,39 @@
 # CHANGELOG
 
+## [v1.1.0] — 2026-05-11
+
+### Added — Phase 13-16：斜杠命令 + 研究吸收 + Token 优化 + MCP 扩展规划
+
+**Phase 14：03-commands/ 斜杠命令目录（补全 v0.2 蓝图缺口）**
+- `/research` → research-object-archive Skill 快速入口
+- `/weekly` → weekly-review Skill 快速入口
+- `/grill` → grill-plan v2 Skill 快速入口
+- `/diagnose` → diagnose Skill 快速入口
+- `/review` → code-review Skill 快速入口
+- `03-commands/README.md` — 部署说明
+
+**Phase 15：sp-executing-plans v1.1（跨会话持久化）**
+- 研究来源：Anthropic claude-quickstarts/autonomous-coding（两 Agent 模式）
+- 新增"跨会话持久化协议"：`tasks-progress.json` 作为状态锚点
+- 新增"两 Agent 模式"：Initializer + Coding Agent 分工，对应 CLI 环境
+- 新增"会话启动协议"：每次新会话先读进度文件，从断点继续
+
+**Phase 16：Token 效率指南**
+- 研究来源：SuperClaude Framework v4.3.0（PM Agent 置信度模式）
+- 新增 `tooling/token-efficiency.md`，包含：
+  - 置信度先检查（≥90%/70-89%/<70% 三档）
+  - Token 预算分级（简单 200 / 中等 1000 / 复杂 2500）
+  - Wave-Checkpoint-Wave 并行模式（3.5x 提速）
+  - 高成本浪费模式识别
+
+**Phase 13：MCP 扩展选型报告**
+- 新增 `05-mcp/expansion-plan.md`
+- 杆杆响：推荐 MySQL/PG MCP，待确认 DB 类型后激活
+- quant-trading：近期用 filesystem 读本地数据，远期评估专用金融数据 MCP
+- 附：GitHub MCP 激活步骤（最高优先级）
+
+---
+
 ## [v1.0.0] — 2026-05-11
 
 ### Changed — Phase 12：系统提示词研究 + CLAUDE.md 优化
