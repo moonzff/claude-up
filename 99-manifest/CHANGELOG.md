@@ -1,5 +1,28 @@
 # CHANGELOG
 
+## [v1.0.0] — 2026-05-11
+
+### Changed — Phase 12：系统提示词研究 + CLAUDE.md 优化
+
+**研究来源**：[Piebald-AI/claude-code-system-prompts](https://github.com/Piebald-AI/claude-code-system-prompts)（10.1k⭐，随 Claude Code 版本自动更新到 v2.1.138）
+
+**CLAUDE.md 优化（v1.0 → v1.1）**：
+- `Progress Audit Requirement` 章节 → 替换为 `Communication Style` 章节（对齐官方 v2.1.104 规范）
+  - 原格式：强制每轮输出 7 行结构化进度块（高 token 成本）
+  - 新规范：首工具调用前一句，关键节点一句更新，轮次结束 1-2 句总结
+- `Do Not Do` 精简：合并 git push + 修改历史条目，删除已在 Operating Principles 重复的密钥条目
+- 新增 `Reference` 章节：记录 claude-code-system-prompts 参考源
+
+**README 修复**：
+- `README.md` + `README_ZH.md`：替换 `your-username` 占位符为 `moonzff`
+- 版本 badge：v0.9.0 → v1.0.0
+
+**公开发布**：
+- GitHub 仓库：https://github.com/moonzff/claude-up（v0.9.0 已发布）
+- v0.9.0 GitHub Release 已创建
+
+---
+
 ## [v0.9.0] — 2026-05-10
 
 ### Changed — 记忆系统升级为四层架构（吸收 agentmemory 设计理念）

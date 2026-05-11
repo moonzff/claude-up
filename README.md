@@ -3,7 +3,7 @@
 > **A reproducible, auditable Claude Code environment governance toolkit.**
 > Dual-scenario: deep software engineering + personal digital assistant.
 
-[![Version](https://img.shields.io/badge/version-v0.9.0-blue)](99-manifest/CHANGELOG.md)
+[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](99-manifest/CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
 [![Platform](https://img.shields.io/badge/platform-Windows%2011%20%2B%20WSL2-lightgrey)](01-global-config/)
 
@@ -106,7 +106,7 @@ Safe, dry-run-first installer with profile selection:
 ### 1. Clone
 
 ```powershell
-git clone https://github.com/your-username/claude-up.git D:\YourWorkspace\Claude_up
+git clone https://github.com/moonzff/claude-up.git D:\YourWorkspace\Claude_up
 cd D:\YourWorkspace\Claude_up
 ```
 

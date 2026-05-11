@@ -1,6 +1,6 @@
 # Claude Global Context
 
-> 版本：v1.0 | 日期：2026-05-07 | 存储：`D:\MoonzWorkspace\Claude_up\01-global-config\windows-claude\CLAUDE.md`
+> 版本：v1.1 | 日期：2026-05-11 | 存储：`D:\MoonzWorkspace\Claude_up\01-global-config\windows-claude\CLAUDE.md`
 > 部署目标：`~/.claude/CLAUDE.md`
 
 ---
@@ -70,21 +70,17 @@
 
 ---
 
-## Progress Audit Requirement
+## Communication Style
 
-**每轮工作结束必须输出结构化进度报告**，格式：
+参考 Claude Code 官方指南（v2.1.104）：
 
-```
-─── 进度审计 ───────────────────────────────────────
-阶段地图：Phase0✅ → Phase1🔄 → Phase2⏳ → Phase3⏳ → ...
-本轮完成：[列举本轮新增/修改的内容]
-验证依据：[已验证的证据，如文件存在、命令输出]
-整体进度：X/Y 项完成（N%）
-下一步：[明确的下一个行动项]
-────────────────────────────────────────────────────
-```
+- **第一个工具调用前**：用一句话说明将要做什么
+- **工作中**：在关键节点（发现问题、改变方向、遇到阻塞）给出简短更新，一句话足够
+- **轮次结束**：1-2 句话总结——本轮改变了什么、下一步是什么，不需要格式化报告
+- **不要**：叙述内部思考过程、重复已知内容、用格式块包裹简单信息
+- **代码中**：默认不写注释；不写多行 docstring；不创建规划文档（除非用户要求）
 
-这是环境建设质量保证的核心机制，不可省略。
+> **例外**：多阶段项目建设（如 Claude_up 分阶段升级）工作结束时可输出简短进度行，格式：`完成：X。下一步：Y。`
 
 ---
 
@@ -152,13 +148,11 @@
 以下操作在没有明确用户确认的情况下**绝对禁止**：
 
 - 发送任何邮件、消息、通知
-- 执行 `git push`（尤其是 `--force`）
+- 执行 `git push`（尤其是 `--force`）或修改已推送的 Git 历史
 - 执行 `rm -rf` 或任何批量删除
 - 执行 `git reset --hard`
 - 写入 `~/.claude/settings.json`（必须经过部署脚本干跑确认）
-- 在任何文件或配置中硬编码 API Key、Token、密码
 - 安装全局 npm 包或 Python 包（必须先报告，经确认后执行）
-- 修改 Git 历史（`filter-repo`、`rebase -i` 涉及已推送提交时）
 
 ---
 
@@ -177,6 +171,14 @@
 | ROA | Research Object Archive，研究档案格式 |
 | 干跑 / dry-run | 只输出预览报告，不执行实际写入 |
 | 双场景 | 工程开发模式（Dev）+ 个人数字助理模式（Assistant）|
+
+---
+
+---
+
+## Reference
+
+- [claude-code-system-prompts](https://github.com/Piebald-AI/claude-code-system-prompts) — Claude Code 官方系统提示词提取，10k⭐，随版本持续更新。Communication Style 和 CLAUDE.md 创建规范均参考此源。
 
 ---
 

@@ -64,11 +64,11 @@ Profile-aware installer (`-Profile dev|assistant|full`), BOOTSTRAP.md, VERSION f
 - [ ] Document learnings in `tooling/task-master-pilot.md`
 - [ ] Evaluate integration with sp-executing-plans workflow
 
-## Phase 12 — Planned: System Prompt Study
-- [ ] Read [claude-code-system-prompts](https://github.com/Piebald-AI/claude-code-system-prompts)
-- [ ] Extract insights for CLAUDE.md optimization
-- [ ] Identify any conflicts/redundancies between Claude_up and built-in prompts
-- [ ] Optimize token budget in global CLAUDE.md
+## Phase 12 — System Prompt Study ✅ Complete (2026-05-11)
+- [x] Read [claude-code-system-prompts](https://github.com/Piebald-AI/claude-code-system-prompts) (v2.1.138, 10.1k⭐)
+- [x] Extract Communication Style guidelines (v2.1.104) + CLAUDE.md creation best practices
+- [x] Conflict found: Progress Audit verbose format → replaced with 1-2 sentence guideline
+- [x] CLAUDE.md v1.0 → v1.1: new Communication Style section, trimmed Do Not Do
 
 ## Phase 13 — Planned: MCP Expansion
 - [ ] Evaluate database MCP for 杆杆响 project
@@ -88,3 +88,4 @@ Profile-aware installer (`-Profile dev|assistant|full`), BOOTSTRAP.md, VERSION f
 | v0.8.0 | 2026-05-09 | 10-skill-library/ + superpowers + Dev Skills |
 | v0.8.1 | 2026-05-09 | systematic-debugging + verification-before-completion |
 | v0.9.0 | 2026-05-10 | Memory system 4-tier + confidence scoring + tooling + public release |
+| v1.0.0 | 2026-05-11 | Phase 12 complete: CLAUDE.md optimized via system-prompts study; README placeholders fixed |

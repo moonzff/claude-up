@@ -3,7 +3,7 @@
 > **可复现、可审计的 Claude Code 环境治理工具包。**
 > 双场景覆盖：深度软件工程 + 个人数字助理。
 
-[![版本](https://img.shields.io/badge/版本-v0.9.0-blue)](99-manifest/CHANGELOG.md)
+[![版本](https://img.shields.io/badge/版本-v1.0.0-blue)](99-manifest/CHANGELOG.md)
 [![许可证](https://img.shields.io/badge/许可证-MIT-green)](LICENSE)
 [![平台](https://img.shields.io/badge/平台-Windows%2011%20%2B%20WSL2-lightgrey)](01-global-config/)
 
@@ -118,7 +118,7 @@ archive/     ← 只追加的日志：决策/教训/事件
 ### 1. 克隆
 
 ```powershell
-git clone https://github.com/your-username/claude-up.git D:\YourWorkspace\Claude_up
+git clone https://github.com/moonzff/claude-up.git D:\YourWorkspace\Claude_up
 cd D:\YourWorkspace\Claude_up
 ```
 
