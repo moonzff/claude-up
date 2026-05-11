@@ -1,0 +1,40 @@
+{
+  "_comment": "Claude_up MCP 基线配置片段 — 合并到 settings.json 的 mcpServers 字段",
+  "_doc": "安装命令：claude mcp add <name> --scope user <command> [args...]",
+
+  "mcpServers": {
+    "filesystem": {
+      "_status": "active",
+      "_phase": "Phase 1",
+      "_install": "claude mcp add filesystem --scope user npx @modelcontextprotocol/server-filesystem D:\\MoonzWorkspace",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest",
+        "D:\\MoonzWorkspace"
+      ]
+    },
+
+    "playwright": {
+      "_status": "active",
+      "_phase": "Phase 4",
+      "_install": "claude mcp add playwright --scope user npx @playwright/mcp@latest",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
+    },
+
+    "context7": {
+      "_status": "active",
+      "_phase": "Phase 4",
+      "_install": "claude mcp add context7 --scope user npx @upstash/context7-mcp@latest",
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    }
+  }
+}

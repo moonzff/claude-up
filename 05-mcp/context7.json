@@ -1,0 +1,37 @@
+{
+  "_name": "context7",
+  "_description": "实时库文档 MCP — 从 Upstash Context7 获取最新版本的框架/库文档，避免 Claude 依赖过时训练数据",
+  "_phase": "Phase 4",
+  "_platform": "Windows (npx)",
+  "_scope": "user",
+
+  "mcp_config": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@upstash/context7-mcp@latest"
+    ]
+  },
+
+  "_install_cmd": "claude mcp add context7 --scope user npx @upstash/context7-mcp@latest",
+
+  "_capabilities": [
+    "resolve-library-id — 将库名映射到 Context7 标准 ID（例：'react' → '/facebook/react'）",
+    "get-library-docs — 获取指定库的最新文档片段（支持 topic 过滤）"
+  ],
+
+  "_use_cases": [
+    "Dev: 查询最新 React / Next.js / Tailwind 等 API，避免幻觉",
+    "Dev: 配合 grill-plan Skill 做技术选型时验证 API 接口是否存在",
+    "Dev: 查询 npm 包最新版本的 breaking changes",
+    "Dev: 写代码时内联验证函数签名和参数"
+  ],
+
+  "_usage_notes": [
+    "在 prompt 中加 'use context7' 触发文档查询",
+    "优先用于版本敏感的 API（Next.js App Router、Prisma、tRPC 等）",
+    "文档片段长度通过 tokens 参数控制，默认 5000",
+    "无需 API Key，公开文档免费访问",
+    "安装后在 Claude Code 中通过 /mcp 验证连接状态"
+  ]
+}

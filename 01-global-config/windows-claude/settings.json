@@ -1,0 +1,139 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "permissions": {
+    "allow": [
+      "Read(D:\\MoonzWorkspace\\**)",
+      "Read(C:\\Users\\admin\\AppData\\Roaming\\Claude\\**)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+      "Bash(git show *)",
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(python *)",
+      "Bash(pip *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(echo *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "mcp__filesystem__*",
+      "mcp__github__*",
+      "mcp__letta__*"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/vault/**)",
+      "Bash(rm -rf *)",
+      "Bash(git reset --hard *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)",
+      "Bash(format *)",
+      "Bash(del /f *)",
+      "Bash(rd /s *)"
+    ]
+  },
+
+  "env": {
+    "ANTHROPIC_API_KEY": "${env:ANTHROPIC_API_KEY}",
+    "OPENAI_API_KEY": "${env:OPENAI_API_KEY}"
+  },
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -NonInteractive -Command \"$logFile = \\\"$Env:USERPROFILE\\\\.claude\\\\audit.log\\\"; $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; $cmd = $Env:CLAUDE_TOOL_INPUT_COMMAND -replace '\\r?\\n',' '; Add-Content -Path $logFile -Value \\\"[$timestamp] BASH: $cmd\\\"\""
+          }
+        ]
+      }
+    ],
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -NonInteractive -Command \"$f = $Env:CLAUDE_TOOL_INPUT_FILE_PATH; if ($f -and ($f -match '\\.(js|ts|jsx|tsx|json|css|scss)$')) { $result = npx prettier --write $f 2>&1; if ($LASTEXITCODE -eq 0) { Write-Host \\\"[post-write-format] Formatted: $f\\\" } }\""
+          }
+        ]
+      },
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -NonInteractive -Command \"$f = $Env:CLAUDE_TOOL_INPUT_FILE_PATH; if ($f -and ($f -like '*\\08-research\\*' -or $f -like '*\\Research\\*')) { Write-Host \\\"[research-trigger] -> 写入了研究目录。考虑用 /research-object-archive 归档。\\\" -ForegroundColor Cyan }\""
+          }
+        ]
+      }
+    ],
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -NonInteractive -Command \"$dir = \\\"$Env:USERPROFILE\\\\.claude\\\\sessions\\\"; New-Item -ItemType Directory -Force -Path $dir | Out-Null; $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; $sessionId = if ($Env:CLAUDE_SESSION_ID) { $Env:CLAUDE_SESSION_ID } else { 'unknown' }; Add-Content -Path \\\"$dir\\\\session-log.txt\\\" -Value \\\"[$ts] Session ended | ID: $sessionId\\\"\""
+          }
+        ]
+      }
+    ]
+  },
+
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest",
+        "D:\\MoonzWorkspace"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@playwright/mcp@latest"
+      ]
+    },
+    "context7": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@upstash/context7-mcp@latest"
+      ]
+    },
+    "github": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-github"
+      ],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
+      }
+    },
+    "letta": {
+      "command": "letta-mcp",
+      "args": [],
+      "env": {
+        "LETTA_BASE_URL": "http://localhost:8283/v1",
+        "LETTA_PASSWORD": ""
+      }
+    }
+  },
+
+  "autoUpdates": true,
+  "verbose": false
+}

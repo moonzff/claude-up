@@ -1,0 +1,29 @@
+{
+  "_name": "post-write-research",
+  "_description": "写入 08-research/ 目录时，提示用户考虑用 research-object-archive Skill 归档",
+  "_event": "PostToolUse",
+  "_matcher": "Write",
+  "_phase": "Phase 3",
+  "_platform": "Windows (PowerShell)",
+
+  "hook_config": {
+    "PostToolUse": [
+      {
+        "matcher": "Write",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -NonInteractive -Command \"$f = $Env:CLAUDE_TOOL_INPUT_FILE_PATH; if ($f -and ($f -like '*\\08-research\\*' -or $f -like '*\\Research\\*')) { Write-Host \\\"[research-trigger] \\u2192 写入了研究目录。如果这是新的调研成果，考虑用 /research-object-archive 归档为结构化档案。\\\" -ForegroundColor Cyan }\""
+          }
+        ]
+      }
+    ]
+  },
+
+  "_usage_notes": [
+    "将 hook_config.PostToolUse 内容追加到 settings.json 的 hooks.PostToolUse 数组（与 post-write-format 并列）",
+    "检测路径包含 '08-research' 或 'Research' 的写入操作",
+    "输出提示信息，不阻断写入，不修改文件内容",
+    "仅作为提醒，用户可选择是否跟进归档"
+  ]
+}

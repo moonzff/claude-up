@@ -1,0 +1,32 @@
+{
+  "_name": "post-write-format",
+  "_description": "写入或编辑 JS/TS/JSON/CSS/MD 文件后，自动用 prettier 格式化",
+  "_event": "PostToolUse",
+  "_matcher": "Write|Edit",
+  "_phase": "Phase 3",
+  "_platform": "Windows (PowerShell + npx)",
+  "_prerequisite": "项目中需有 prettier 配置，或全局安装 prettier",
+
+  "hook_config": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -NonInteractive -Command \"$f = $Env:CLAUDE_TOOL_INPUT_FILE_PATH; if ($f -and ($f -match '\\.(js|ts|jsx|tsx|json|css|scss|md)$')) { $result = npx prettier --write $f 2>&1; if ($LASTEXITCODE -eq 0) { Write-Host \\\"[post-write-format] Formatted: $f\\\" } }\""
+          }
+        ]
+      }
+    ]
+  },
+
+  "_usage_notes": [
+    "将 hook_config.PostToolUse 内容合并到 settings.json 的 hooks.PostToolUse 数组",
+    "仅对特定扩展名生效：.js .ts .jsx .tsx .json .css .scss .md",
+    "依赖 npx + prettier，首次运行会下载 prettier",
+    "若项目无 prettier 配置，使用 prettier 默认规则",
+    "格式化失败时静默跳过（不阻断 Claude 工作流）",
+    "如不需要 MD 格式化，从正则中移除 |md"
+  ]
+}

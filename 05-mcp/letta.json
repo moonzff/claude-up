@@ -1,0 +1,58 @@
+{
+  "_meta": {
+    "name": "letta",
+    "phase": "Phase 7-B",
+    "status": "configured",
+    "added": "2026-05-09",
+    "activation": "需要安装 Letta 服务器并运行在 localhost:8283"
+  },
+  "description": "Letta 持久记忆层 MCP 适配器，让 Claude 拥有跨会话的结构化长期记忆",
+  "architecture": {
+    "letta_server": "Python 服务，存储 Agent 状态和记忆块，运行在 localhost:8283",
+    "letta_mcp": "npm 包，将 Letta REST API 转换为 MCP 工具，Claude 通过它调用 Letta",
+    "flow": "Claude → letta-mcp（MCP）→ Letta Server（REST）→ 持久化存储（SQLite）"
+  },
+  "memory_blocks_design": {
+    "user_profile": "Moonz 的工作风格、偏好、技术背景（稳定，低频更新）",
+    "active_projects": "当前在跑的项目状态速览（中频更新，每周）",
+    "technical_decisions": "跨项目的架构决策和技术选型记录（追加为主）",
+    "working_patterns": "发现的高效工作模式、踩过的坑（经验沉淀）",
+    "claude_up_state": "Claude_up 项目当前版本和未解决问题"
+  },
+  "activation_steps": [
+    "前置：确认 Python 3.10+ 和 npm 已安装",
+    "",
+    "Step 1 — 安装 Letta 服务器：",
+    "  pip install letta",
+    "  letta server --help  （验证安装）",
+    "",
+    "Step 2 — 安装 MCP 桥接适配器：",
+    "  npm install -g letta-mcp-server",
+    "  letta-mcp --help  （验证安装）",
+    "",
+    "Step 3 — 启动 Letta 服务器（每次使用 Claude 前）：",
+    "  双击 06-deployment-kit/start-letta-server.bat",
+    "  或：在 PowerShell 中运行 letta server",
+    "",
+    "Step 4 — 初始化记忆 Agent（首次）：",
+    "  在 Claude 对话中：'用 Letta 创建一个叫 moonz-assistant 的记忆 Agent'",
+    "",
+    "Step 5 — 验证：",
+    "  在对话中：'通过 Letta 记住：我的主力项目是 杆杆响会员服务'"
+  ],
+  "file_based_fallback": {
+    "description": "在 Letta 完全激活前，使用 08-memory/ 目录的 Markdown 文件作为记忆层",
+    "path": "D:\\MoonzWorkspace\\Claude_up\\08-memory\\",
+    "access": "通过现有 filesystem MCP 或 Read 工具直接访问，无需额外配置"
+  },
+  "mcpServers_entry": {
+    "letta": {
+      "command": "letta-mcp",
+      "args": [],
+      "env": {
+        "LETTA_BASE_URL": "http://localhost:8283/v1",
+        "LETTA_PASSWORD": ""
+      }
+    }
+  }
+}

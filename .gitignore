@@ -1,0 +1,47 @@
+# Personal memory data — use 08-memory/templates/ as starting point
+08-memory/core/human.md
+08-memory/core/projects.md
+08-memory/working/
+# Legacy flat memory files (pre-v0.7 format)
+08-memory/user-profile.md
+08-memory/active-projects.md
+08-memory/technical-stack.md
+
+# Secrets and credentials
+.env
+.env.*
+*.pem
+*.key
+*.p12
+secrets/
+vault/
+
+# Runtime artifacts
+07-validation-results/runs/
+*.run.json
+*.run.md
+
+# Local overrides (not for sharing)
+*.local.json
+*.local.md
+CLAUDE.local.md
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node
+node_modules/
+npm-debug.log
+
+# Python
+__pycache__/
+*.pyc
+.venv/

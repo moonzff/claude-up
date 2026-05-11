@@ -1,0 +1,30 @@
+{
+  "_name": "stop-session-summary",
+  "_description": "每次对话结束时，将会话时间戳写入 ~/.claude/sessions/session-log.txt",
+  "_event": "Stop",
+  "_matcher": null,
+  "_phase": "Phase 3",
+  "_platform": "Windows (PowerShell)",
+
+  "hook_config": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -NonInteractive -Command \"$dir = \\\"$Env:USERPROFILE\\\\.claude\\\\sessions\\\"; New-Item -ItemType Directory -Force -Path $dir | Out-Null; $ts = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; $sessionId = $Env:CLAUDE_SESSION_ID; Add-Content -Path \\\"$dir\\\\session-log.txt\\\" -Value \\\"[$ts] Session ended | ID: $sessionId\\\"\""
+          }
+        ]
+      }
+    ]
+  },
+
+  "_usage_notes": [
+    "将 hook_config.Stop 内容合并到 settings.json 的 hooks.Stop 数组",
+    "日志目录：%USERPROFILE%\\.claude\\sessions\\",
+    "日志文件：session-log.txt（追加写入，不覆盖）",
+    "每行格式：[2026-05-07 15:00:00] Session ended | ID: <session-id>",
+    "可扩展：在命令中追加更多上下文，如最后使用的工具、token 估算等",
+    "CLAUDE_SESSION_ID 由 Claude Code 注入，若为空则记录 unknown"
+  ]
+}

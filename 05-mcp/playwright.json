@@ -1,0 +1,43 @@
+{
+  "_name": "playwright",
+  "_description": "浏览器自动化 MCP — 提供 Playwright 控制能力，用于 Web 抓取、UI 测试、表单填写、截图",
+  "_phase": "Phase 4",
+  "_platform": "Windows (npx)",
+  "_scope": "user",
+
+  "mcp_config": {
+    "command": "npx",
+    "args": [
+      "-y",
+      "@playwright/mcp@latest"
+    ]
+  },
+
+  "_install_cmd": "claude mcp add playwright --scope user npx @playwright/mcp@latest",
+
+  "_capabilities": [
+    "browser_navigate — 导航到 URL",
+    "browser_screenshot — 截取当前页面截图",
+    "browser_click — 点击页面元素",
+    "browser_type — 向输入框输入文字",
+    "browser_evaluate — 在页面上下文中执行 JavaScript",
+    "browser_select_option — 选择下拉框选项",
+    "browser_wait_for — 等待元素/状态出现"
+  ],
+
+  "_use_cases": [
+    "Dev: E2E 测试自动化（配合 diagnose Skill 调试失败用例）",
+    "Dev: 抓取动态页面内容（JS 渲染后的数据）",
+    "Dev: 生成 UI 回归截图",
+    "Assistant: 填写在线表单（需用户确认）",
+    "Assistant: 监控页面变化"
+  ],
+
+  "_usage_notes": [
+    "运行前需确认 Node.js 已安装（npx 依赖）",
+    "首次运行会自动下载 Playwright Chromium",
+    "默认使用 headless 模式；如需可视化可配置 --headed",
+    "结合 CLAUDE.md 中的安全规则：导航到外部链接需用户确认",
+    "安装后在 Claude Code 中通过 /mcp 验证连接状态"
+  ]
+}

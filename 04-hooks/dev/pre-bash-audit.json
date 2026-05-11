@@ -1,0 +1,29 @@
+{
+  "_name": "pre-bash-audit",
+  "_description": "每次执行 Bash 命令前，将命令写入审计日志 ~/.claude/audit.log",
+  "_event": "PreToolUse",
+  "_matcher": "Bash",
+  "_phase": "Phase 3",
+  "_platform": "Windows (PowerShell)",
+
+  "hook_config": {
+    "PreToolUse": [
+      {
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "powershell -NoProfile -NonInteractive -Command \"$logFile = \\\"$Env:USERPROFILE\\\\.claude\\\\audit.log\\\"; $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'; $cmd = $Env:CLAUDE_TOOL_INPUT_COMMAND -replace '\\r?\\n',' '; Add-Content -Path $logFile -Value \\\"[$timestamp] BASH: $cmd\\\"\""
+          }
+        ]
+      }
+    ]
+  },
+
+  "_usage_notes": [
+    "将 hook_config.PreToolUse 内容合并到 ~/.claude/settings.json 的 hooks.PreToolUse 数组",
+    "日志文件位置：%USERPROFILE%\\.claude\\audit.log",
+    "每行格式：[2026-05-07 14:30:00] BASH: git status",
+    "多行命令会被压缩为一行（\\n 替换为空格）"
+  ]
+}
