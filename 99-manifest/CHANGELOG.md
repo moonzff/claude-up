@@ -1,5 +1,46 @@
 # CHANGELOG
 
+## [v1.3.0] — 2026-05-13
+
+### Added — awesome-design-md + claude-code-best-practice 研究吸收
+
+**ROA 归档**（`00-overview/`）：
+- `20260513_research_v0.1_awesome-design-md.md` — VoltAgent/awesome-design-md（77K⭐，DESIGN.md 设计系统概念）
+- `20260513_research_v0.1_claude-code-best-practice.md` — shanraisshan/claude-code-best-practice（52.7K⭐，agentic engineering 全链路）
+
+**09-templates/project/DESIGN.md（新建）**：
+- 研究来源：VoltAgent/awesome-design-md + Google Stitch DESIGN.md 概念
+- 填补 Claude_up 缺失的视觉设计层（原体系只有 CLAUDE.md 管行为，无视觉约束）
+- 模板内容：品牌定位、10 色系统、字体体系（32/24/20/16/14/12px）、8px 间距系统、圆角规范（4/8/12/16px）、按钮/输入框/卡片/导航组件规范、布局规则（1200px max, 768px 断点, 12 列栅格）、图标/动效规范、AI 生成约束
+
+**CLAUDE.md Domain Glossary 更新**：
+- 新增 `DESIGN.md` 词条：视觉规范文档，与 CLAUDE.md 的分工说明（构建 vs 视觉）
+
+**tooling/README.md 更新**：
+- 新增"Git Worktree — 并行多会话模式"章节
+- 研究来源：shanraisshan/claude-code-best-practice
+- 包含完整命令示例、适用场景、限制说明
+
+---
+
+## [v1.2.0] — 2026-05-13
+
+### Added — happy-claude-skills 研究吸收
+
+**ROA 归档**：`00-overview/20260513_research_v0.1_happy-claude-skills.md`
+- 定性：直接复用低，架构借鉴中高
+- 提取：`npx skills add` 社区安装范式 + 多提供商统一接口抽象
+
+**tooling/README.md 更新**：
+- 新增社区 Skill 发现入口（`npx skills add`）
+- 链接 `token-efficiency.md`
+
+**08-memory/semantic/patterns.md 更新**：
+- P004 证据链强化（reinforced: 2→3，置信度 0.85→0.88）
+- 新增 P005：多提供商统一接口抽象（适用于 quant-trading 多 LLM 评议封装）
+
+---
+
 ## [v1.1.0] — 2026-05-11
 
 ### Added — Phase 13-16：斜杠命令 + 研究吸收 + Token 优化 + MCP 扩展规划

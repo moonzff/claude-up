@@ -38,13 +38,25 @@
 
 ---
 
-<!-- PAT | id: P004 | confidence: 0.85 | reinforced: 2 | last: 2026-05-10 -->
+<!-- PAT | id: P004 | confidence: 0.88 | reinforced: 3 | last: 2026-05-13 -->
 ## [P004] 外部开源工具的成熟度评估
 **规律**：满足以下任一条件的工具，调研价值 > 直接安装价值：① Stars < 500 或 Commits < 50；② 依赖外部服务/运行时（curl|sh 安装器、私有服务器）；③ 与现有工具功能高度重叠。有用的设计理念可以提取，但整体引入风险高。
 **证据**：
 - superpowers-zh（22⭐）→ 提取 2 个 Skill，不整体安装（+1）
 - agentmemory（290⭐, iii-engine 依赖）→ 吸收理念，不安装（+1）
+- happy-claude-skills（287⭐, 14 commits, 单作者）→ 提取架构理念 + 多提供商模式，不安装（+1）
 **行动**：新工具调研用"提取价值 vs 直接安装"框架判断
+<!-- /PAT -->
+
+---
+
+<!-- PAT | id: P005 | confidence: 0.82 | reinforced: 1 | last: 2026-05-13 -->
+## [P005] 多提供商统一接口抽象
+**规律**：当需要调用多个同类 API 提供商（不同 LLM / 不同数据源 / 不同生成服务）时，在调用方和供应商之间引入统一接口层，使切换供应商不影响上层代码。
+**证据**：
+- happy-claude-skills 的 happy-image-gen：统一封装 8 个图像生成提供商，调用方无感知切换（+1）
+- 适用场景识别：quant-trading 多 LLM 评议（POLO/OPENROUTER/本地模型）同构
+**行动**：quant-trading 多 LLM 评议模块设计时，优先采用统一接口层，而非直接调用各厂商 SDK
 <!-- /PAT -->
 
 ---

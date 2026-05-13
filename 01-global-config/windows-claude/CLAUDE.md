@@ -169,6 +169,7 @@
 | Hook | Claude Code 确定性执行脚本，无例外 |
 | MCP | Model Context Protocol，工具扩展协议 |
 | ROA | Research Object Archive，研究档案格式 |
+| DESIGN.md | 视觉设计规范文档（色彩/字体/间距/组件），供 AI design/coding agents 读取；与 CLAUDE.md 分工：CLAUDE.md 管"怎么构建"，DESIGN.md 管"看起来怎样" |
 | 干跑 / dry-run | 只输出预览报告，不执行实际写入 |
 | 双场景 | 工程开发模式（Dev）+ 个人数字助理模式（Assistant）|
 
