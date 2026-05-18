@@ -126,9 +126,49 @@ cognee_recall("Claude_up")   # 应返回刚存入的记忆
 
 ---
 
+---
+
+## Phase 8B：codegraph 代码库语义索引（补充部署步骤）
+
+### 安装（双击即可）
+
+```
+D:\MoonzWorkspace\Claude_up\06-deployment-kit\install-codegraph.bat
+```
+
+或手动：
+```powershell
+npm install -g @colbymchenry/codegraph
+npx @colbymchenry/codegraph   # 交互式配置，自动写入 Claude Code MCP
+```
+
+### 重新部署 settings.json（含 codegraph MCP）
+
+```powershell
+.\06-deployment-kit\install_claude_app.ps1 -Execute
+```
+
+### 初始化各项目（每个代码仓库执行一次）
+
+```powershell
+cd D:\MoonzWorkspace\<project>
+codegraph init -i    # 构建索引，约 1-4 分钟
+codegraph status     # 验证
+```
+
+### 与 cognee 的分工
+
+| 工具 | 解决什么问题 | 数据范围 |
+|------|------------|---------|
+| cognee | 跨会话的人/项目/决策记忆 | 对话内容、知识 |
+| codegraph | 代码库结构理解，减少 grep | 源代码符号图谱 |
+
+---
+
 ## 版本记录
 
 | 版本 | 日期 | 变更 |
 |------|------|------|
+| v1.2 | 2026-05-18 | Phase 8B：codegraph 代码库语义索引 |
 | v1.1 | 2026-05-18 | Phase 8：cognee 语义记忆层，替代未激活的 letta |
 | v1.0 | 2026-05-07 | 初始版本，Phase 1 基线 |

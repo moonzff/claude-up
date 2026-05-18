@@ -1,0 +1,70 @@
+{
+  "_meta": {
+    "name": "codegraph",
+    "phase": "Phase 8",
+    "status": "active",
+    "added": "2026-05-18",
+    "activation": "npm install -g @colbymchenry/codegraph -> codegraph init -i"
+  },
+  "description": "代码库语义索引 MCP。预建符号关系图谱和调用图，Claude 探索代码时直接查图而非逐文件 grep。实测 92% 减少 tool calls，71% 提速。100% 本地，SQLite，无 API Key 需求。",
+
+  "key_stats": {
+    "tool_calls_reduction": "92% average",
+    "speed_improvement": "71% average",
+    "languages": "19+ (TypeScript, JavaScript, Python, Go, Rust, Java, C#, PHP, Ruby, C, C++, Swift, Kotlin, Dart, Svelte...)",
+    "storage": "local SQLite (.codegraph/codegraph.db per project)",
+    "api_keys": "none required",
+    "cost": "free"
+  },
+
+  "mcp_tools": {
+    "codegraph_search": "按名称搜索符号（函数/类/方法）",
+    "codegraph_explore": "为任务构建完整代码上下文（仅在 Explore Agent 中调用，避免占满主会话上下文）",
+    "codegraph_callers": "查找调用某函数的所有上层调用者",
+    "codegraph_callees": "查找某函数调用的所有下层函数",
+    "codegraph_impact": "分析修改某符号会影响哪些代码（改动前评估）",
+    "codegraph_node": "获取单个符号详情（含源码）",
+    "codegraph_files": "获取已索引的文件结构（比 filesystem 扫描快）",
+    "codegraph_status": "查看索引健康状态和统计"
+  },
+
+  "usage_rules": {
+    "NEVER_in_main_session": "codegraph_explore / codegraph_context（返回大量源码，会塞满主会话上下文）",
+    "OK_in_main_session": "codegraph_search, codegraph_callers, codegraph_callees, codegraph_impact, codegraph_node",
+    "explore_agent_rule": "所有探索性问题（how does X work / where is Y / explain Z）必须派发到 Explore Agent，在 agent prompt 中注明使用 codegraph_explore"
+  },
+
+  "activation_steps": [
+    "Step 1 - Global install:",
+    "  npm install -g @colbymchenry/codegraph",
+    "",
+    "Step 2 - Auto-configure Claude Code (adds MCP + CLAUDE.md instructions):",
+    "  npx @colbymchenry/codegraph",
+    "",
+    "Step 3 - Initialize each codebase project:",
+    "  cd D:\\MoonzWorkspace\\<your-project>",
+    "  codegraph init -i",
+    "",
+    "Step 4 - Verify:",
+    "  codegraph status",
+    "  # In Claude: codegraph_search 'main' to test"
+  ],
+
+  "mcpServers_entry": {
+    "codegraph": {
+      "type": "stdio",
+      "command": "codegraph",
+      "args": ["serve", "--mcp"]
+    }
+  },
+
+  "auto_sync": "MCP server watches project via native OS file events (FSEvents/inotify/ReadDirectoryChangesW), debounced 2s, incremental sync. Graph stays fresh as you code.",
+
+  "project_initialization": {
+    "note": "codegraph is project-specific. Run 'codegraph init -i' in each project root to create .codegraph/. Without .codegraph/, MCP tools return no results.",
+    "suggested_projects": [
+      "D:\\MoonzWorkspace\\Claude_up",
+      "D:\\MoonzWorkspace\\<any active dev project>"
+    ]
+  }
+}

@@ -22,7 +22,8 @@
       "Bash(find *)",
       "mcp__filesystem__*",
       "mcp__github__*",
-      "mcp__cognee__*"
+      "mcp__cognee__*",
+      "mcp__codegraph__*"
     ],
     "deny": [
       "Read(**/.env)",
@@ -123,6 +124,11 @@
       "env": {
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
       }
+    },
+    "codegraph": {
+      "type": "stdio",
+      "command": "codegraph",
+      "args": ["serve", "--mcp"]
     },
     "cognee": {
       "command": "python",

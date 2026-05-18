@@ -98,9 +98,10 @@
 |---------|---------|
 | 读写本地文件 | Read/Write/Edit 文件工具 或 mcp__filesystem |
 | 目录遍历/搜索 | Glob / Grep 工具 |
+| 代码库探索 | codegraph_search / codegraph_impact（项目已 init 时优先） |
 | Shell 命令执行 | Bash 工具（受 permissions.deny 约束） |
 | 网页检索 | WebFetch / WebSearch |
-| 浏览器自动化 | mcp__playwright（Phase 4 后） |
+| 浏览器自动化 | mcp__playwright |
 
 **MCP 接入状态**：
 - `filesystem`：✅ 已接入，范围 `D:\MoonzWorkspace`
@@ -108,6 +109,7 @@
 - `context7`：✅ 已接入（实时库文档查询）
 - `github`：⚙️ 已配置，激活需设置环境变量 `GITHUB_TOKEN`
 - `cognee`：✅ 已接入（语义记忆 MCP，自动持久化跨会话记忆，向量搜索 + 知识图谱）
+- `codegraph`：✅ 已接入（代码库语义索引，项目需先 `codegraph init -i`，无 API Key）
 
 **记忆系统（双引擎架构）**：
 
@@ -139,6 +141,12 @@
 - 教训出现 2+ 次 → 蒸馏至 `semantic/patterns.md`
 - 有项目状态变化 → 更新 `core/projects.md`
 - 有新稳定信息 → 更新对应 core/ 块（字符限制内）
+
+**CodeGraph 使用规则**（项目含 `.codegraph/` 时生效）：
+- 主会话轻量工具：`codegraph_search`、`codegraph_impact`、`codegraph_callers`、`codegraph_node`
+- 探索性问题（how/where/explain）→ 派发 Explore Agent，在 prompt 中注明优先用 `codegraph_explore`
+- **禁止**在主会话直接调用 `codegraph_explore`（返回大量源码会占满上下文）
+- 项目无 `.codegraph/` → 询问用户是否运行 `codegraph init -i`
 
 ---
 
