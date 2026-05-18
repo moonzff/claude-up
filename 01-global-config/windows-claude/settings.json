@@ -134,9 +134,14 @@
       "command": "python",
       "args": ["-m", "cognee.mcp"],
       "env": {
-        "LLM_API_KEY": "${env:ANTHROPIC_API_KEY}",
-        "LLM_PROVIDER": "anthropic",
-        "LLM_MODEL": "claude-haiku-4-5-20251001",
+        "LLM_API_KEY": "${env:DASHSCOPE_API_KEY}",
+        "LLM_PROVIDER": "openai",
+        "LLM_MODEL": "qwen-plus",
+        "LLM_ENDPOINT": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "EMBEDDING_PROVIDER": "openai",
+        "EMBEDDING_API_KEY": "${env:DASHSCOPE_API_KEY}",
+        "EMBEDDING_MODEL": "text-embedding-v3",
+        "EMBEDDING_ENDPOINT": "https://dashscope.aliyuncs.com/compatible-mode/v1",
         "COGNEE_DATA_PATH": "D:\\MoonzWorkspace\\Claude_up\\09-cognee"
       }
     }
