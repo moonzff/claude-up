@@ -15,7 +15,7 @@ $Mode = if ($Execute) { "EXECUTE" } else { "DRY-RUN" }
 
 Write-Host ""
 Write-Host "=======================================================" -ForegroundColor Cyan
-Write-Host "  Claude_up - cognee Install" -ForegroundColor Cyan
+Write-Host "  Claude_up - cognee Memory Layer Installer" -ForegroundColor Cyan
 Write-Host "  Mode: $Mode" -ForegroundColor Cyan
 Write-Host "=======================================================" -ForegroundColor Cyan
 Write-Host ""
@@ -25,20 +25,18 @@ Write-Step "Step 1: Checking Python..."
 
 $pythonCmd = $null
 foreach ($cmd in @("python", "python3", "py")) {
-    try {
-        $ver = & $cmd --version 2>&1
-        if ($ver -match "Python (\d+)\.(\d+)") {
-            $major = [int]$Matches[1]
-            $minor = [int]$Matches[2]
-            if ($major -eq 3 -and $minor -ge 10) {
-                $pythonCmd = $cmd
-                Write-Ok "Found Python: $ver (cmd: $cmd)"
-                break
-            } else {
-                Write-Warn "Python $ver is too old, need 3.10+"
-            }
+    $ver = & $cmd --version 2>&1
+    if ($LASTEXITCODE -eq 0 -and $ver -match "Python (\d+)\.(\d+)") {
+        $major = [int]$Matches[1]
+        $minor = [int]$Matches[2]
+        if ($major -eq 3 -and $minor -ge 10) {
+            $pythonCmd = $cmd
+            Write-Ok "Found: $ver  (cmd: $cmd)"
+            break
+        } else {
+            Write-Warn "Python $ver too old, need 3.10+"
         }
-    } catch { }
+    }
 }
 
 if (-not $pythonCmd) {
@@ -49,9 +47,9 @@ if (-not $pythonCmd) {
 # --- Step 2: Check pip ---
 Write-Step "Step 2: Checking pip..."
 
-$pipCheck = & $pythonCmd -m pip --version 2>&1
+$pipVer = & $pythonCmd -m pip --version 2>&1
 if ($LASTEXITCODE -eq 0) {
-    Write-Ok "pip OK: $pipCheck"
+    Write-Ok "pip OK: $pipVer"
 } else {
     Write-Err "pip not found. Run: $pythonCmd -m ensurepip --upgrade"
     exit 1
@@ -61,22 +59,23 @@ if ($LASTEXITCODE -eq 0) {
 Write-Step "Step 3: Checking OPENAI_API_KEY..."
 
 if ($env:OPENAI_API_KEY) {
-    $masked = $env:OPENAI_API_KEY.Substring(0, [Math]::Min(10, $env:OPENAI_API_KEY.Length)) + "..."
-    Write-Ok "OPENAI_API_KEY is set: $masked"
+    $keyLen = $env:OPENAI_API_KEY.Length
+    $masked = $env:OPENAI_API_KEY.Substring(0, [Math]::Min(10, $keyLen)) + "..."
+    Write-Ok "OPENAI_API_KEY set: $masked"
 } else {
-    Write-Warn "OPENAI_API_KEY not set."
-    Write-Info "Set it in: System Properties -> Advanced -> Environment Variables"
-    Write-Info "Variable: OPENAI_API_KEY  Value: sk-..."
+    Write-Warn "OPENAI_API_KEY not set. cognee needs it for LLM + embeddings."
+    Write-Info "Set via: System Properties -> Advanced -> Environment Variables"
+    Write-Info "Name: OPENAI_API_KEY   Value: sk-..."
 }
 
 # --- Step 4: Install cognee ---
 Write-Step "Step 4: Installing cognee..."
 
 if ($Execute) {
-    Write-Step "Running: $pythonCmd -m pip install cognee --quiet"
-    & $pythonCmd -m pip install cognee --quiet
+    Write-Step "Running: $pythonCmd -m pip install cognee"
+    & $pythonCmd -m pip install cognee
     if ($LASTEXITCODE -ne 0) {
-        Write-Err "cognee install failed. Try manually: pip install cognee"
+        Write-Err "Install failed. Try manually: pip install cognee"
         exit 1
     }
     Write-Ok "cognee installed"
@@ -88,31 +87,32 @@ if ($Execute) {
 Write-Step "Step 5: Verifying cognee..."
 
 if ($Execute) {
-    $cogneeVer = & $pythonCmd -c "import cognee; print(getattr(cognee, '__version__', 'installed'))" 2>&1
+    $result = & $pythonCmd -c "import cognee; print(getattr(cognee, '__version__', 'ok'))" 2>&1
     if ($LASTEXITCODE -eq 0) {
-        Write-Ok "cognee importable: $cogneeVer"
+        Write-Ok "cognee importable: $result"
     } else {
-        Write-Warn "Could not verify version, but install may have succeeded"
+        Write-Warn "Import check failed - install may still have succeeded"
     }
 } else {
     Write-Dry "Would verify: python -c 'import cognee'"
 }
 
 # --- Step 6: Create data directory ---
-Write-Step "Step 6: Creating cognee data directory..."
+Write-Step "Step 6: Creating data directory: $DataPath"
 
 if ($Execute) {
     if (-not (Test-Path $DataPath)) {
         New-Item -ItemType Directory -Path $DataPath -Force | Out-Null
         Write-Ok "Created: $DataPath"
-        Set-Content -Path (Join-Path $DataPath ".gitignore") -Value "*.db`n*.db-shm`n*.db-wal`nvector_store/`ngraph_data/`n"
+        $gi = "*.db`n*.db-shm`n*.db-wal`nvector_store/`ngraph_data/`n"
+        Set-Content -Path (Join-Path $DataPath ".gitignore") -Value $gi -Encoding ASCII
         Write-Ok "Created .gitignore"
     } else {
-        Write-Ok "Data directory already exists: $DataPath"
+        Write-Ok "Already exists: $DataPath"
     }
 } else {
     Write-Dry "Would create: $DataPath"
-    Write-Dry "Would create: .gitignore (*.db, vector_store/, graph_data/)"
+    Write-Dry "Would create: .gitignore"
 }
 
 # --- Done ---
@@ -120,19 +120,20 @@ Write-Host ""
 Write-Host "=======================================================" -ForegroundColor Cyan
 
 if ($Execute) {
-    Write-Host "  DONE - cognee installed successfully" -ForegroundColor Green
+    Write-Host "  DONE" -ForegroundColor Green
     Write-Host ""
     Write-Host "  Next steps:"
-    Write-Host "  1. Deploy settings.json:" -ForegroundColor White
-    Write-Host "       .\install_claude_app.ps1 -Execute" -ForegroundColor DarkYellow
+    Write-Host "  1. Deploy updated settings.json:" -ForegroundColor White
+    Write-Host "       cd D:\MoonzWorkspace\Claude_up" -ForegroundColor DarkYellow
+    Write-Host "       .\06-deployment-kit\install_claude_app.ps1 -Execute" -ForegroundColor DarkYellow
     Write-Host "  2. Restart Claude Code / Cowork" -ForegroundColor White
     Write-Host "  3. Verify in Claude session:" -ForegroundColor White
-    Write-Host "       cognee_remember + cognee_recall" -ForegroundColor DarkYellow
+    Write-Host "       cognee_remember / cognee_recall" -ForegroundColor DarkYellow
 } else {
     Write-Host "  DRY-RUN complete - no changes made" -ForegroundColor Yellow
     Write-Host ""
     $selfPath = $MyInvocation.MyCommand.Path
-    Write-Host "  To actually install, run:"
+    Write-Host "  To actually install:"
     Write-Host "    powershell -NoProfile -ExecutionPolicy Bypass -File '$selfPath' -Execute" -ForegroundColor DarkYellow
 }
 
