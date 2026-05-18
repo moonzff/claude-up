@@ -14,3 +14,6 @@
 [2026-05-10] [Claude_up] superpowers-zh（22⭐）→ 提取 systematic-debugging + verification-before-completion 两个 Skill，不整体安装 · 原因：14/19 个 Skill 与现有库重叠，整体引入是噪音
 [2026-05-10] [Claude_up] agentmemory（290⭐）→ 吸收四层架构 + 置信度 + 记忆进化等设计理念，不安装服务 · 原因：iii-engine 外部依赖风险 + Hooks 在 Cowork 不触发
 [2026-05-10] [Claude_up] 08-memory/ 升级为四层架构（v0.9.0）：Core/Working/Semantic/Archive · 原因：吸收 agentmemory 的规律蒸馏和置信度评分理念，纯文件实现无外部依赖
+[2026-05-18] [ganganxiangPM] OA 多端架构 P1 收口：cron 全迁 Mac mini（7×24），代码 Git 主端 + Win/Mac 双拉，看板原地生成原地服务（HR_REPORTS_DIR env + scripts._paths）。Win 不再跑业务 cron。详情：project-docs/plans/20260518_architecture_and_workflow.md
+[2026-05-18] [ganganxiangPM] 5/18 17:45-20:45 经营会议决策：小张晋升 P2 (1.5x 指标 / 6010 月薪)；小戴转岗虚拟技术支持（不考核业绩）；余熠转产品岗（KPI = 需求表完成率）；销售部目标 35w 拆 4 人，转化率 5%；周三周会、周五管理层；5/19 前各部门考核指标定版。来源：HR/K 知识/K2 决策档案/05-18+工作事务汇总.md
+[2026-05-18] [ganganxiangPM] 试岗中 = 万博/周牧/余熠（已写入 onboarding_records，promotion 试岗 3 个月观察期，5/31 / 6/30 / 7/31 三检查点）

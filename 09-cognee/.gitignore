@@ -1,0 +1,6 @@
+*.db
+*.db-shm
+*.db-wal
+vector_store/
+graph_data/
+
