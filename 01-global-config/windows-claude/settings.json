@@ -22,7 +22,7 @@
       "Bash(find *)",
       "mcp__filesystem__*",
       "mcp__github__*",
-      "mcp__letta__*"
+      "mcp__cognee__*"
     ],
     "deny": [
       "Read(**/.env)",
@@ -124,7 +124,21 @@
         "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
       }
     },
+    "cognee": {
+      "command": "python",
+      "args": ["-m", "cognee.mcp"],
+      "env": {
+        "LLM_API_KEY": "${env:ANTHROPIC_API_KEY}",
+        "LLM_PROVIDER": "anthropic",
+        "LLM_MODEL": "claude-haiku-4-5-20251001",
+        "COGNEE_DATA_PATH": "D:\\MoonzWorkspace\\Claude_up\\09-cognee"
+      }
+    }
+  },
+
+  "_archived_mcpServers": {
     "letta": {
+      "_note": "归档于 2026-05-18，被 cognee 替代。需常驻服务器(localhost:8283)，复杂度过高。",
       "command": "letta-mcp",
       "args": [],
       "env": {

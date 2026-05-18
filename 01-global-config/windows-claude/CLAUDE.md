@@ -49,7 +49,7 @@
 - WSL2 Ubuntu：已安装
 - MCP filesystem：已配置（`D:\MoonzWorkspace`）
 - MCP github：已配置（需要环境变量 `GITHUB_TOKEN`）
-- MCP letta：已配置（需要本地 Letta 服务运行在 localhost:8283）
+- MCP cognee：✅ 已配置（语义记忆层，pip install 后自动启动，无需常驻服务）
 
 ---
 
@@ -107,37 +107,36 @@
 - `playwright`：✅ 已接入（浏览器自动化）
 - `context7`：✅ 已接入（实时库文档查询）
 - `github`：⚙️ 已配置，激活需设置环境变量 `GITHUB_TOKEN`
-- `letta`：⚙️ 已配置，激活需启动本地服务（见 `06-deployment-kit/start-letta-server.bat`）
+- `cognee`：✅ 已接入（语义记忆 MCP，自动持久化跨会话记忆，向量搜索 + 知识图谱）
 
-**记忆系统（四层架构，文件实现）**：
+**记忆系统（双引擎架构）**：
 
 记忆层路径：`D:\MoonzWorkspace\Claude_up\08-memory\`
 完整协议见：`D:\MoonzWorkspace\Claude_up\02-skills\assistant\memory-update\SKILL.md`
 
-| 层级 | 路径 | 用途 | 加载时机 |
-|------|------|------|---------|
-| Core | `core/` | 角色/用户/项目/技术栈（4块） | 每次会话自动 |
-| Working | `working/` | 项目级详情 | 进入具体项目时 |
-| Semantic | `semantic/` | 规律模式+约定惯例（有置信度） | 遇到重复决策时 |
-| Archive | `archive/` | 决策/教训/事件日志 | Grep 搜索时 |
+| 引擎 | 工具 | 用途 | 特点 |
+|------|------|------|------|
+| cognee MCP | `cognee_recall` / `cognee_remember` | 语义搜索 + 知识图谱 | 跨会话自动持久，向量搜索 |
+| 文件层 | Read/Edit/Grep | 结构化基础上下文 | Git 版本控制，可读可查 |
+
+| 文件层级 | 路径 | 用途 |
+|---------|------|------|
+| Core | `core/` | 角色/用户/项目/技术栈 (4块，每次会话读) |
+| Working | `working/` | 项目级详情（按需加载）|
+| Semantic | `semantic/` | 规律模式（遇到重复决策时读）|
+| Archive | `archive/` | 决策/教训/事件日志（append-only）|
 
 **会话启动（每次新会话自动执行）**：
-依次读取以下 Core Memory 块：
-  1. `08-memory/core/persona.md`（自身角色）
-  2. `08-memory/core/human.md`（用户画像）
-  3. `08-memory/core/projects.md`（项目快照）
-  4. `08-memory/core/stack.md`（技术环境）
-读取完毕后直接开始工作，无需用户重新介绍背景。
-
-**按需加载**：
-- 具体项目工作 → 读 `08-memory/working/<project>.md`
-- 遇到重复决策/约定问题 → 读 `08-memory/semantic/patterns.md` 或 `conventions.md`
+1. 调用 `cognee_recall("当前任务或项目关键词")` → 语义召回相关历史记忆
+2. 依次读取 Core Memory 块：`persona.md` · `human.md` · `projects.md` · `stack.md`
+3. 如进入具体项目 → 读 `08-memory/working/<project>.md`
+完成后直接开始工作，无需用户重新介绍背景。
 
 **会话结束检查**：
-- 有重要决策 → 追加至 `archive/decisions.md`
-- 有新教训 → 追加至 `archive/lessons.md`（含置信度，先矛盾检测）
-- 教训出现 2+ 次 → 蒸馏至 `semantic/patterns.md`（semantic_distill）
-- 已有规律被验证 → `semantic/patterns.md` 对应条目 reinforced+1
+- 有重要决策/教训/输出 → 先调用 `cognee_remember("内容摘要")` 存入语义层
+- 有重要决策 → 同时追加至 `archive/decisions.md`
+- 有新教训 → 同时追加至 `archive/lessons.md`（含置信度，先矛盾检测）
+- 教训出现 2+ 次 → 蒸馏至 `semantic/patterns.md`
 - 有项目状态变化 → 更新 `core/projects.md`
 - 有新稳定信息 → 更新对应 core/ 块（字符限制内）
 
@@ -151,7 +150,7 @@
 - 执行 `git push`（尤其是 `--force`）或修改已推送的 Git 历史
 - 执行 `rm -rf` 或任何批量删除
 - 执行 `git reset --hard`
-- 写入 `~/.claude/settings.json`（必须经过部署脚本干跑确认）
+- 写入 `~/.claude/settings.json` 时必须先 Read 当前文件，输出 unified diff 预览（新增/修改/删除哪几行 + 字段含义），用户回复确认后再 Edit。一次性 permission 添加（如新增 `Bash(ssh ...)` 到 allow 列表）属于此类。**禁止跳过预览直接 Edit。**
 - 安装全局 npm 包或 Python 包（必须先报告，经确认后执行）
 
 ---

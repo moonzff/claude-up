@@ -1,0 +1,84 @@
+{
+  "_meta": {
+    "name": "cognee",
+    "phase": "Phase 8",
+    "status": "active",
+    "replaces": "letta (Phase 7-B，因需要常驻服务器未激活，已归档)",
+    "added": "2026-05-18",
+    "activation": "pip install \"cognee[mcp]\" → python -m cognee.mcp"
+  },
+  "description": "cognee 知识引擎 MCP 适配器。向量搜索 + 知识图谱双引擎，本地 SQLite 存储，跨会话语义记忆持久化。解决每次重新介绍背景的痛点。",
+
+  "architecture": {
+    "cognee_core": "Python 包，本地运行，构建知识图谱 + 向量索引，存储在本地 SQLite",
+    "cognee_mcp": "MCP server 模式，将 cognee API 暴露为工具，Claude 直接调用",
+    "llm_role": "Claude Haiku 用于 cognee 内部 entity/relation 提取（低成本）",
+    "storage": "D:\\MoonzWorkspace\\Claude_up\\09-cognee\\  (本地，可 Git 忽略或备份)"
+  },
+
+  "memory_design": {
+    "semantic_layer": "cognee 负责语义召回（取代原 Grep archival）",
+    "file_layer": "08-memory/ 文件保留，作为版本控制层（Git 历史）",
+    "workflow": "写入：先 cognee_remember → 再追加到 archive/*.md；召回：先 cognee_recall → 补充读 core/*.md"
+  },
+
+  "tools_exposed": {
+    "cognee_remember": "将文本/决策/上下文存入知识图谱（会话结束时调用）",
+    "cognee_recall": "语义搜索已有记忆，返回最相关片段（会话开始时调用）",
+    "cognee_forget": "删除指定内容（数据清理时使用）"
+  },
+
+  "activation_steps": [
+    "Step 1 — 安装 cognee（含 MCP 扩展）：",
+    "  双击 06-deployment-kit/install-cognee.bat",
+    "  或手动运行：pip install \"cognee[mcp]\"",
+    "",
+    "Step 2 — 配置 LLM API（使用已有 Anthropic Key，无需新增）：",
+    "  已通过 settings.json 中的 ${env:ANTHROPIC_API_KEY} 自动注入",
+    "",
+    "Step 3 — 部署 settings.json 使 MCP 生效：",
+    "  .\\06-deployment-kit\\install_claude_app.ps1 -Execute",
+    "",
+    "Step 4 — 首次导入现有记忆到 cognee（可选，增量进行）：",
+    "  在 Claude 对话中：'用 cognee_remember 导入 08-memory/archive/ 的历史记录'",
+    "",
+    "Step 5 — 验证：",
+    "  在 Claude 对话中：'用 cognee_recall 搜索 Claude_up 相关记忆'"
+  ],
+
+  "env_vars": {
+    "LLM_API_KEY": "${env:OPENAI_API_KEY}",
+    "LLM_PROVIDER": "openai",
+    "LLM_MODEL": "gpt-4o-mini",
+    "COGNEE_DATA_PATH": "D:\\MoonzWorkspace\\Claude_up\\09-cognee"
+  },
+
+  "cost_note": "gpt-4o-mini 约 ¥0.001/千字，embedding ada-002 约 ¥0.0007/千字。日常记忆写入+召回合计单次约 ¥0.002，几乎可忽略。",
+
+  "mcpServers_entry": {
+    "cognee": {
+      "command": "python",
+      "args": ["-m", "cognee.mcp"],
+      "env": {
+        "LLM_API_KEY": "${env:OPENAI_API_KEY}",
+        "LLM_PROVIDER": "openai",
+        "LLM_MODEL": "gpt-4o-mini",
+        "COGNEE_DATA_PATH": "D:\\MoonzWorkspace\\Claude_up\\09-cognee"
+      }
+    }
+  },
+
+  "vs_letta": {
+    "优势": [
+      "无需常驻服务器进程（letta 需要 localhost:8283 一直运行）",
+      "pip install 即可，零额外基础设施",
+      "支持 Anthropic Claude 作为 LLM provider，与现有配置一致",
+      "向量搜索 + 知识图谱双引擎，语义质量优于 letta 文件检索",
+      "有 MCP 原生支持，集成更干净"
+    ],
+    "劣势": [
+      "相比 08-memory/ 文件方案，首次 pip install 有额外依赖",
+      "cognee 项目较新（2025），API 可能有变化"
+    ]
+  }
+}
