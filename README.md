@@ -5,7 +5,7 @@
 
 [![Version](https://img.shields.io/badge/version-v1.0.0-blue)](99-manifest/CHANGELOG.md)
 [![License](https://img.shields.io/badge/license-MIT-green)](LICENSE)
-[![Platform](https://img.shields.io/badge/platform-Windows%2011%20%2B%20WSL2-lightgrey)](01-global-config/)
+[![Platform](https://img.shields.io/badge/platform-Windows%2011%20%7C%20macOS-lightgrey)](01-global-config/)
 
 [中文文档 →](README_ZH.md)
 
@@ -99,41 +99,58 @@ Safe, dry-run-first installer with profile selection:
 ## Quick Start
 
 ### Prerequisites
-- Windows 11 + PowerShell 7
+- **Windows 11 + PowerShell 7**, or **macOS (Apple Silicon) + zsh**
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) installed (`npm install -g @anthropic-ai/claude-code`)
 - Node.js ≥ 18
 
-### 1. Clone
+> Two global-config profiles are provided: `01-global-config/windows-claude/`
+> and `01-global-config/mac-claude/`. Pick the one matching your OS.
+> See [`mac-claude/MIGRATION-NOTES.md`](01-global-config/mac-claude/MIGRATION-NOTES.md)
+> for a full Windows→macOS migration walkthrough.
+
+<details>
+<summary><b>Windows (PowerShell)</b></summary>
 
 ```powershell
+# 1. Clone
 git clone https://github.com/moonzff/claude-up.git D:\YourWorkspace\Claude_up
 cd D:\YourWorkspace\Claude_up
-```
 
-### 2. Set up your memory
-
-```powershell
-# Copy templates and fill in your own details
+# 2. Set up your memory
 Copy-Item 08-memory\templates\human.template.md    08-memory\core\human.md
 Copy-Item 08-memory\templates\projects.template.md 08-memory\core\projects.md
-# Edit both files with your info
-```
 
-### 3. Deploy config
-
-```powershell
-# Dry-run first (see what will change)
+# 3. Deploy config (dry-run, then apply)
 .\06-deployment-kit\install_claude_app.ps1
-
-# Apply after reviewing
 .\06-deployment-kit\install_claude_app.ps1 -Execute -Profile full
-```
 
-### 4. Verify
-
-```powershell
+# 4. Verify
 .\cli\claude_app.ps1 doctor
 ```
+</details>
+
+<details>
+<summary><b>macOS (zsh)</b></summary>
+
+```bash
+# 1. Clone
+git clone https://github.com/moonzff/claude-up.git ~/MoonzWorkspace/Claude_up
+cd ~/MoonzWorkspace/Claude_up
+
+# 2. Set up your memory
+cp 08-memory/templates/human.template.md    08-memory/core/human.md
+cp 08-memory/templates/projects.template.md 08-memory/core/projects.md
+
+# 3. Deploy config — copy the mac-claude profile into ~/.claude
+mkdir -p ~/.claude/commands
+cp 01-global-config/mac-claude/CLAUDE.md     ~/.claude/CLAUDE.md
+cp 01-global-config/mac-claude/settings.json ~/.claude/settings.json   # review the diff first
+cp 03-commands/{diagnose,grill,research,review,weekly}.md ~/.claude/commands/
+
+# 4. Verify
+claude --version && ls ~/.claude/{commands,CLAUDE.md,settings.json}
+```
+</details>
 
 ---
 
@@ -143,7 +160,8 @@ Copy-Item 08-memory\templates\projects.template.md 08-memory\core\projects.md
 Claude_up/
 ├── 00-overview/          # Research docs and architectural synthesis
 ├── 01-global-config/     # settings.json + CLAUDE.md templates
-│   └── windows-claude/
+│   ├── windows-claude/   # Windows profile
+│   └── mac-claude/       # macOS profile (+ MIGRATION-NOTES.md)
 ├── 02-skills/            # Always-active skills (dev/ + assistant/)
 ├── 03-commands/          # Slash command templates
 ├── 04-hooks/             # Hook configs (dev/ + assistant/)

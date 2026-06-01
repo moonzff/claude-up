@@ -5,7 +5,7 @@
 
 [![版本](https://img.shields.io/badge/版本-v1.0.0-blue)](99-manifest/CHANGELOG.md)
 [![许可证](https://img.shields.io/badge/许可证-MIT-green)](LICENSE)
-[![平台](https://img.shields.io/badge/平台-Windows%2011%20%2B%20WSL2-lightgrey)](01-global-config/)
+[![平台](https://img.shields.io/badge/平台-Windows%2011%20%7C%20macOS-lightgrey)](01-global-config/)
 
 [English →](README.md)
 
@@ -111,41 +111,58 @@ archive/     ← 只追加的日志：决策/教训/事件
 ## 快速开始
 
 ### 前置条件
-- Windows 11 + PowerShell 7
+- **Windows 11 + PowerShell 7**，或 **macOS（Apple Silicon）+ zsh**
 - [Claude Code CLI](https://docs.anthropic.com/en/docs/claude-code) 已安装
 - Node.js ≥ 18
 
-### 1. 克隆
+> 提供两套全局配置 profile：`01-global-config/windows-claude/` 与
+> `01-global-config/mac-claude/`，按操作系统选用。
+> Windows→macOS 完整迁移过程见
+> [`mac-claude/MIGRATION-NOTES.md`](01-global-config/mac-claude/MIGRATION-NOTES.md)。
+
+<details>
+<summary><b>Windows（PowerShell）</b></summary>
 
 ```powershell
+# 1. 克隆
 git clone https://github.com/moonzff/claude-up.git D:\YourWorkspace\Claude_up
 cd D:\YourWorkspace\Claude_up
-```
 
-### 2. 初始化个人记忆
-
-```powershell
-# 复制模板并填入个人信息
+# 2. 初始化个人记忆
 Copy-Item 08-memory\templates\human.template.md    08-memory\core\human.md
 Copy-Item 08-memory\templates\projects.template.md 08-memory\core\projects.md
-# 编辑这两个文件，填入你的信息
-```
 
-### 3. 部署配置
-
-```powershell
-# 先干跑看预览
+# 3. 部署配置（先干跑，再执行）
 .\06-deployment-kit\install_claude_app.ps1
-
-# 确认无误后执行
 .\06-deployment-kit\install_claude_app.ps1 -Execute -Profile full
-```
 
-### 4. 验证
-
-```powershell
+# 4. 验证
 .\cli\claude_app.ps1 doctor
 ```
+</details>
+
+<details>
+<summary><b>macOS（zsh）</b></summary>
+
+```bash
+# 1. 克隆
+git clone https://github.com/moonzff/claude-up.git ~/MoonzWorkspace/Claude_up
+cd ~/MoonzWorkspace/Claude_up
+
+# 2. 初始化个人记忆
+cp 08-memory/templates/human.template.md    08-memory/core/human.md
+cp 08-memory/templates/projects.template.md 08-memory/core/projects.md
+
+# 3. 部署配置 —— 把 mac-claude profile 拷进 ~/.claude
+mkdir -p ~/.claude/commands
+cp 01-global-config/mac-claude/CLAUDE.md     ~/.claude/CLAUDE.md
+cp 01-global-config/mac-claude/settings.json ~/.claude/settings.json   # 写入前先看 diff
+cp 03-commands/{diagnose,grill,research,review,weekly}.md ~/.claude/commands/
+
+# 4. 验证
+claude --version && ls ~/.claude/{commands,CLAUDE.md,settings.json}
+```
+</details>
 
 ---
 
@@ -155,7 +172,8 @@ Copy-Item 08-memory\templates\projects.template.md 08-memory\core\projects.md
 Claude_up/
 ├── 00-overview/          # 研究文档和架构综合规划
 ├── 01-global-config/     # settings.json + CLAUDE.md 模板
-│   └── windows-claude/
+│   ├── windows-claude/   # Windows profile
+│   └── mac-claude/       # macOS profile（含 MIGRATION-NOTES.md）
 ├── 02-skills/            # 全局激活 Skills（dev/ + assistant/）
 ├── 03-commands/          # 斜杠命令模板
 ├── 04-hooks/             # Hook 配置（dev/ + assistant/）
