@@ -15,3 +15,4 @@
 [2026-05-09] [Claude_up] v0.8.0 完整性测试通过（6 项 Tests，2 项修复：sp-tdd SKILL.md 补充 + projects.md 版本更新）
 [2026-05-10] [Claude_up] v0.8.1：systematic-debugging + verification-before-completion 从 superpowers-zh 提取加入 10-skill-library
 [2026-05-10] [Claude_up] v0.9.0：记忆系统升级四层架构（吸收 agentmemory 设计），memory-update SKILL v2.0，semantic/ 层建立
+[2026-05-18 → 2026-05-21] [quant-arena] 2026-W21 周报：SAMA framework Sprint-2/3 三天高强度推动 → Phase A CLOSED + Phase B COMPOSITION-COMPLETE on main；32+ PR；新增 L007/L008/L009 三条 lessons。详见 archive/weekly/2026-W21_weekly-review.md
