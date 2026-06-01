@@ -1,0 +1,113 @@
+{
+  "$schema": "https://json.schemastore.org/claude-code-settings.json",
+
+  "theme": "dark",
+
+  "permissions": {
+    "allow": [
+      "Read(//Users/moonz/MoonzWorkspace/**)",
+      "Read(//Users/moonz/Library/Application Support/Claude/**)",
+      "Bash(git status)",
+      "Bash(git log *)",
+      "Bash(git diff *)",
+      "Bash(git branch *)",
+      "Bash(git show *)",
+      "Bash(npm run *)",
+      "Bash(npx *)",
+      "Bash(node *)",
+      "Bash(python *)",
+      "Bash(python3 *)",
+      "Bash(pip *)",
+      "Bash(pip3 *)",
+      "Bash(ls *)",
+      "Bash(cat *)",
+      "Bash(echo *)",
+      "Bash(grep *)",
+      "Bash(find *)",
+      "mcp__filesystem__*",
+      "mcp__github__*",
+      "mcp__cognee__*",
+      "mcp__codegraph__*"
+    ],
+    "deny": [
+      "Read(**/.env)",
+      "Read(**/.env.*)",
+      "Read(**/secrets/**)",
+      "Read(**/*.pem)",
+      "Read(**/*.key)",
+      "Read(**/*.p12)",
+      "Read(**/vault/**)",
+      "Bash(rm -rf *)",
+      "Bash(git reset --hard *)",
+      "Bash(git push --force *)",
+      "Bash(git push -f *)"
+    ]
+  },
+
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": [
+        "-y",
+        "@modelcontextprotocol/server-filesystem@latest",
+        "/Users/moonz/MoonzWorkspace"
+      ]
+    },
+    "playwright": {
+      "command": "npx",
+      "args": ["-y", "@playwright/mcp@latest"]
+    },
+    "context7": {
+      "command": "npx",
+      "args": ["-y", "@upstash/context7-mcp@latest"]
+    },
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@modelcontextprotocol/server-github"],
+      "env": {
+        "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
+      }
+    },
+    "cognee": {
+      "command": "python3",
+      "args": ["-m", "cognee.mcp"],
+      "env": {
+        "LLM_API_KEY": "${env:DASHSCOPE_API_KEY}",
+        "LLM_PROVIDER": "openai",
+        "LLM_MODEL": "qwen-plus",
+        "LLM_ENDPOINT": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "EMBEDDING_PROVIDER": "openai",
+        "EMBEDDING_API_KEY": "${env:DASHSCOPE_API_KEY}",
+        "EMBEDDING_MODEL": "text-embedding-v3",
+        "EMBEDDING_ENDPOINT": "https://dashscope.aliyuncs.com/compatible-mode/v1",
+        "COGNEE_DATA_PATH": "/Users/moonz/MoonzWorkspace/Claude_up/09-cognee"
+      }
+    }
+  },
+
+  "_pending_mcpServers": {
+    "_note": "需要先在 Mac 安装后端再迁入 mcpServers：codegraph 需安装 codegraph 二进制并在项目内 `codegraph init -i`。cognee 已启用（记得 `pip install cognee` 并设置 DASHSCOPE_API_KEY）。",
+    "codegraph": {
+      "type": "stdio",
+      "command": "codegraph",
+      "args": ["serve", "--mcp"]
+    }
+  },
+
+  "_archived_mcpServers": {
+    "letta": {
+      "_note": "归档于 2026-05-18，被 cognee 替代。需常驻服务器(localhost:8283)，复杂度过高。",
+      "command": "letta-mcp",
+      "args": [],
+      "env": {
+        "LETTA_BASE_URL": "http://localhost:8283/v1",
+        "LETTA_PASSWORD": ""
+      }
+    }
+  },
+
+  "_deferred_hooks_note": "Windows 版 settings.json 含 4 个 PowerShell hooks（pre-bash-audit / post-write-format / post-write-research / stop-session-summary）。Mac 端需改写为 bash 后再启用，源在 ~/MoonzWorkspace/Claude_up/04-hooks/。本次按用户要求暂不部署 hooks。",
+
+  "autoUpdates": true,
+  "verbose": false
+}
