@@ -130,3 +130,11 @@
 <!-- LES | id: L021 | confidence: 0.90 | reinforced: 1 | date: 2026-05-25 | concepts: [background-process, kill, ps-grep, verification] -->
 [2026-05-25] [quant-arena/ops] **Sub-shell kill 不一定杀掉长跑 Python**：`ps ... | xargs kill` 返回成功后，被 kill 的 Python 进程仍可能继续跑到自然结束 (~45 min later)，最终把已编辑的本地文件覆写回去（因为它们持有 file handle）。验证模式：`ps -ef | grep <pattern>` 等到真没结果再继续。修复反应：发现覆写后 `git checkout <file>` revert 单文件而非整个 working tree。
 <!-- /LES -->
+
+<!-- LES | id: L022 | confidence: 0.95 | reinforced: 1 | date: 2026-06-08 | concepts: [cognee, dashscope, litellm, embedding, openai-compatible, config] -->
+[2026-06-08] [Claude_up/MCP配置] **cognee 接第三方 OpenAI 兼容端点（DashScope）三连坑**——每个都会让 add/cognify 静默挂：(1) **litellm 需 `provider/model` 前缀**：`LLM_MODEL=qwen-plus` 裸名触发 "LLM Provider NOT provided" → 连接测试 30s 超时 → add 直接挂；必须写 `openai/qwen-plus`。(2) **embedding 别用 `openai` provider**：会走 LiteLLMEmbeddingEngine → tiktoken 无法映射非 OpenAI 模型名（`text-embedding-v3`）报 KeyError；改 `EMBEDDING_PROVIDER=openai_compatible`（直接用 openai SDK + tokenizer 回退默认编码，且 model 名**不带**前缀）。(3) **维度/批量必须匹配后端**：`EMBEDDING_DIMENSIONS=1024`（cognee 默认 3072）+ `EMBEDDING_BATCH_SIZE=10`（DashScope v3 batch 上限 10，默认 36 → 400 InvalidParameter，一次灌库 840 次失败致图谱残缺）。补充：单用户库设 `ENABLE_BACKEND_ACCESS_CONTROL=false`；手动跑 CLI 要统一 export `DATA_ROOT_DIRECTORY`/`SYSTEM_ROOT_DIRECTORY`，否则数据落 venv 内部默认目录、add 与 search 各看各的。
+<!-- /LES -->
+
+<!-- LES | id: L023 | confidence: 0.9 | reinforced: 1 | date: 2026-06-08 | concepts: [debugging, cli-wrapper, python-api, traceback, error-hiding] -->
+[2026-06-08] [Claude_up/排障] **CLI wrapper 吞异常时，降到底层库的 Python API 直接调用抓堆栈**：cognee-cli 把所有异常压成一句 "Please refer to our docs"，连官方 `--debug` flag 都不吐 traceback，排障卡死。绕过 CLI 写十来行 Python（`import cognee` + `asyncio.run(...)` + `traceback.print_exc()`）直接调 add/cognify，立刻拿到真实异常（`litellm.BadRequestError`）。通用模式：诊断 CLI 工具失败时若 CLI 隐藏错误，找它底层的库 API 在 Python 里直接调，错误无处可藏。
+<!-- /LES -->

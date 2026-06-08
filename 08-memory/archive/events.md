@@ -16,3 +16,4 @@
 [2026-05-10] [Claude_up] v0.8.1：systematic-debugging + verification-before-completion 从 superpowers-zh 提取加入 10-skill-library
 [2026-05-10] [Claude_up] v0.9.0：记忆系统升级四层架构（吸收 agentmemory 设计），memory-update SKILL v2.0，semantic/ 层建立
 [2026-05-18 → 2026-05-21] [quant-arena] 2026-W21 周报：SAMA framework Sprint-2/3 三天高强度推动 → Phase A CLOSED + Phase B COMPOSITION-COMPLETE on main；32+ PR；新增 L007/L008/L009 三条 lessons。详见 archive/weekly/2026-W21_weekly-review.md
+[2026-06-08] [Claude_up] 记忆系统落地：SessionStart hook 注入 core 四块生效 + cognee 1.1 语义层端到端打通（DashScope 后端），13 个记忆文件灌入知识图谱（数据 19MB），3 条召回验证通过；`~/.claude/settings.json` 的 cognee 配置修正 5 处（含 profile 同步）

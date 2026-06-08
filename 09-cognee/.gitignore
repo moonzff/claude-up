@@ -3,4 +3,7 @@
 *.db-wal
 vector_store/
 graph_data/
+.data_storage/
+.cognee_system/
+.venv/
 

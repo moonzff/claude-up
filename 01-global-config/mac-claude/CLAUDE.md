@@ -1,6 +1,6 @@
 # Claude Global Context
 
-> 版本：v1.2 (mac) | 日期：2026-05-31 | 存储：`~/MoonzWorkspace/Claude_up/01-global-config/mac-claude/CLAUDE.md`
+> 版本：v1.3 (mac) | 日期：2026-06-08 | 存储：`~/MoonzWorkspace/Claude_up/01-global-config/mac-claude/CLAUDE.md`
 > 部署目标：`~/.claude/CLAUDE.md`
 > 说明：本文件由 Windows 版 (`windows-claude/CLAUDE.md` v1.1) 改写为 macOS 视角；原则/记忆/沟通规范保持一致，仅环境与路径按 Mac 调整。
 
@@ -50,7 +50,7 @@
 - Git / GitHub CLI(gh) / rsync：已安装（Homebrew）
 - MCP filesystem：配置范围 `~/MoonzWorkspace`
 - MCP github：需环境变量 `GITHUB_TOKEN`
-- MCP cognee：语义记忆层；已切换至阿里云百炼 DashScope（需 `DASHSCOPE_API_KEY`）
+- MCP cognee：语义记忆层（venv 隔离 `09-cognee/.venv`，cognee 1.1.2）；阿里云百炼 DashScope 后端（需 `DASHSCOPE_API_KEY`）；2026-06-08 端到端打通
 
 ---
 
@@ -112,31 +112,34 @@
 - `cognee`：语义记忆 MCP（DashScope 后端，需 `DASHSCOPE_API_KEY`）
 - `codegraph`：代码库语义索引（项目需先 `codegraph init -i`，无 API Key）
 
-**记忆系统（双引擎架构）**：
+**记忆系统（双引擎 + Hook 注入）**：
 
 记忆层路径：`~/MoonzWorkspace/Claude_up/08-memory/`
 完整协议见：`~/MoonzWorkspace/Claude_up/02-skills/assistant/memory-update/SKILL.md`
 
 | 引擎 | 工具 | 用途 | 特点 |
 |------|------|------|------|
-| cognee MCP | `cognee_recall` / `cognee_remember` | 语义搜索 + 知识图谱 | 跨会话自动持久，向量搜索 |
+| cognee MCP | `mcp__cognee__recall` / `mcp__cognee__remember`（实际工具名 `recall`/`remember`） | 语义搜索 + 知识图谱 | 跨会话自动持久，向量搜索 |
 | 文件层 | Read/Edit/Grep | 结构化基础上下文 | Git 版本控制，可读可查 |
+| SessionStart Hook | `~/.claude/hooks/inject-memory.sh` | 每会话确定性注入 core 四块 | 零依赖、机制保底，不靠 AI 自觉 |
+
+> cognee 运行态：venv `09-cognee/.venv`（Python 3.12 · cognee 1.1.2）+ `~/.claude/settings.json` 的 cognee `env` 块；数据落 `09-cognee/.data_storage` + `.cognee_system`。接 DashScope 的配置坑见 lessons **L022**（litellm 前缀 / `openai_compatible` / 维度 1024 / batch ≤10）。
 
 | 文件层级 | 路径 | 用途 |
 |---------|------|------|
-| Core | `core/` | 角色/用户/项目/技术栈 (4块，每次会话读) |
+| Core | `core/` | 角色/用户/项目/技术栈 (4块，**SessionStart hook 自动注入**) |
 | Working | `working/` | 项目级详情（按需加载）|
 | Semantic | `semantic/` | 规律模式（遇到重复决策时读）|
 | Archive | `archive/` | 决策/教训/事件日志（append-only）|
 
 **会话启动（每次新会话自动执行）**：
-1. 调用 `cognee_recall("当前任务或项目关键词")` → 语义召回相关历史记忆
-2. 依次读取 Core Memory 块：`persona.md` · `human.md` · `projects.md` · `stack.md`
-3. 如进入具体项目 → 读 `08-memory/working/<project>.md`
+0. **【已自动】SessionStart hook 确定性注入 core 四块**（persona/human/projects/stack）——会话开头即在上下文，无需手动读。
+1. 调用 `mcp__cognee__recall("当前任务或项目关键词")` → 语义召回相关历史记忆（跨会话知识图谱）
+2. 如进入具体项目 → 读 `08-memory/working/<project>.md`
 完成后直接开始工作，无需用户重新介绍背景。
 
 **会话结束检查**：
-- 有重要决策/教训/输出 → 先调用 `cognee_remember("内容摘要")` 存入语义层
+- 有重要决策/教训/输出 → 先调用 `mcp__cognee__remember("内容摘要")` 存入语义层
 - 有重要决策 → 同时追加至 `archive/decisions.md`
 - 有新教训 → 同时追加至 `archive/lessons.md`（含置信度，先矛盾检测）
 - 教训出现 2+ 次 → 蒸馏至 `semantic/patterns.md`

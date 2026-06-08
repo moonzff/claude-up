@@ -33,3 +33,9 @@
 [2026-05-25] [quant-arena] B.4 decile-spread gate added to factor_validation.py 作为 B.1 rank-IC 的补充 · 原因：sentiment alpha 是 tail-concentrated 不是 monotonic，Spearman IC 在中段被噪声稀释 ≈0 但 top-vs-bot decile spread 真实可观 (3/5 个因子年化 +27-49%, t≈1.2-1.5)。永久工具，未来 R-Layer 候选共用
 [2026-05-25] [quant-arena] promotion_gate_check.py 新增 SHADOW PENDING 语义 (PR A5)：status=shadow + shadow_days < min_shadow_period_days 阈值 → exit 0 with "SHADOW PENDING" 而非 exit 2 GATE VIOLATION · 原因：CI 之前会误杀 ANY PR 引入新 candidate.yaml 的 day-0 状态。新 shadow 候选的 KPI 占位符是 by-design，不是 gate failure
 [2026-05-25] [quant-arena] Mac tushare-mirror cron 验证通过：18:00 BJ Mon-Fri 准时跑通，280/280 stocks ok, exit 0 · 原因：#282 launchd plist + wrapper 部署后首个正式工作日观察，今天 18:00:04 → 18:04:26 (4m22s) 落地 2026-05-25 bar 数据。pipeline 稳态运行
+[2026-06-08] [Claude_up] 记忆"两手抓"落地：SessionStart hook (`~/.claude/hooks/inject-memory.sh`) 确定性注入 core 四块（机制保底，零依赖）+ cognee 1.1 语义层（DashScope 后端，加速）· 原因：CLAUDE.md "每会话读记忆"是自然语言约定靠 AI 自觉执行不稳，hook 把"读 core"变成确定性注入
+[2026-06-08] [Claude_up] cognee 用 uv 建隔离 venv（`09-cognee/.venv`，Python 3.12）装 cognee 1.1.2 · 原因：系统 Python 3.9 不满足 cognee ≥3.10 要求，绝不污染系统环境
+[2026-06-08] [Claude_up] cognee 1.1 入口/路径修正：MCP 入口 = 独立命令 `cognee-mcp --transport stdio`（非 `python -m cognee.mcp`）；数据目录 = `DATA_ROOT_DIRECTORY`+`SYSTEM_ROOT_DIRECTORY`（`COGNEE_DATA_PATH` 已失效）· 原因：cognee 1.1 入口与配置字段变更
+[2026-06-08] [Claude_up] cognee 接 DashScope 的正确 env（实测打通）：`LLM_MODEL=openai/qwen-plus` + `EMBEDDING_PROVIDER=openai_compatible` + `EMBEDDING_DIMENSIONS=1024` + `EMBEDDING_BATCH_SIZE=10` + `ENABLE_BACKEND_ACCESS_CONTROL=false` · 原因：三连坑（litellm 缺前缀致连接超时 / tiktoken 无法映射 v3 / 维度 3072≠1024 且 batch 36>10 上限），详见 L022
+[2026-06-08] [Claude_up] 灌入 cognee 的记忆集 = 08-memory 13 个规范文件（core×4 / working×3 / semantic×2 / archive×3 + weekly×1），排除 3 个 [DEPRECATED] 顶层文件 + README + templates · 原因：避免旧 Windows 路径/重复信息污染知识图谱
+[2026-06-08] [Claude_up] 记忆自动化范围：只自动"读"（hook 注入 core），写入保持半自动（SessionEnd 自动写留待以后）· 原因：先求稳，避免噪声写入

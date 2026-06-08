@@ -69,24 +69,28 @@
       }
     },
     "cognee": {
-      "command": "python3",
-      "args": ["-m", "cognee.mcp"],
+      "command": "/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.venv/bin/cognee-mcp",
+      "args": ["--transport", "stdio"],
       "env": {
         "LLM_API_KEY": "${env:DASHSCOPE_API_KEY}",
         "LLM_PROVIDER": "openai",
-        "LLM_MODEL": "qwen-plus",
+        "LLM_MODEL": "openai/qwen-plus",
         "LLM_ENDPOINT": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "EMBEDDING_PROVIDER": "openai",
+        "EMBEDDING_PROVIDER": "openai_compatible",
         "EMBEDDING_API_KEY": "${env:DASHSCOPE_API_KEY}",
         "EMBEDDING_MODEL": "text-embedding-v3",
+        "EMBEDDING_DIMENSIONS": "1024",
+        "EMBEDDING_BATCH_SIZE": "10",
         "EMBEDDING_ENDPOINT": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "COGNEE_DATA_PATH": "/Users/moonz/MoonzWorkspace/Claude_up/09-cognee"
+        "DATA_ROOT_DIRECTORY": "/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.data_storage",
+        "SYSTEM_ROOT_DIRECTORY": "/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.cognee_system",
+        "ENABLE_BACKEND_ACCESS_CONTROL": "false"
       }
     }
   },
 
   "_pending_mcpServers": {
-    "_note": "需要先在 Mac 安装后端再迁入 mcpServers：codegraph 需安装 codegraph 二进制并在项目内 `codegraph init -i`。cognee 已启用（记得 `pip install cognee` 并设置 DASHSCOPE_API_KEY）。",
+    "_note": "需要先在 Mac 安装后端再迁入 mcpServers：codegraph 需安装 codegraph 二进制并在项目内 `codegraph init -i`。cognee 已启用并端到端打通（venv 隔离 09-cognee/.venv，DASHSCOPE_API_KEY 见 .zshrc + launchctl）。",
     "codegraph": {
       "type": "stdio",
       "command": "codegraph",
@@ -106,8 +110,20 @@
     }
   },
 
-  "_deferred_hooks_note": "Windows 版 settings.json 含 4 个 PowerShell hooks（pre-bash-audit / post-write-format / post-write-research / stop-session-summary）。Mac 端需改写为 bash 后再启用，源在 ~/MoonzWorkspace/Claude_up/04-hooks/。本次按用户要求暂不部署 hooks。",
+  "_deferred_hooks_note": "Windows 版 settings.json 含 4 个 PowerShell hooks（pre-bash-audit / post-write-format / post-write-research / stop-session-summary）。Mac 端需改写为 bash 后再启用，源在 ~/MoonzWorkspace/Claude_up/04-hooks/。这 4 个仍暂不部署；SessionStart 记忆注入 hook 已于 2026-06-08 部署（见下方 hooks 块）。",
+
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          { "type": "command", "command": "/Users/moonz/.claude/hooks/inject-memory.sh" }
+        ]
+      }
+    ]
+  },
 
   "autoUpdates": true,
-  "verbose": false
+  "verbose": false,
+  "skipWorkflowUsageWarning": true
 }
