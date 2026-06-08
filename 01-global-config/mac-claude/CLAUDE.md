@@ -104,13 +104,16 @@
 | 网页检索 | WebFetch / WebSearch |
 | 浏览器自动化 | mcp__playwright |
 
-**MCP 接入状态**（Mac 端需重新 add 并重填密钥）：
-- `filesystem`：范围 `~/MoonzWorkspace`
-- `playwright`：浏览器自动化
-- `context7`：实时库文档查询
-- `github`：激活需设置环境变量 `GITHUB_TOKEN`
-- `cognee`：语义记忆 MCP（DashScope 后端，需 `DASHSCOPE_API_KEY`）
-- `codegraph`：代码库语义索引（项目需先 `codegraph init -i`，无 API Key）
+**MCP 注册机制**（2026-06-08 查实，见 lessons L024）：MCP server 注册在 `~/.claude.json`（用 `claude mcp add <name> -s user -- <cmd> <args>`），**不是** `~/.claude/settings.json` 的 `mcpServers`——Claude Code v2.1.x 不读后者。带密钥的 server 用 wrapper 脚本从环境/`.zshrc` 读 key，`~/.claude.json` 里 env 留空、零硬编码。Codex 用 `~/.codex/config.toml` 的 `[mcp_servers.*]`，可指向同一 wrapper → Claude 与 Codex 共享 cognee 知识图谱。
+
+**MCP 接入状态**（已注册 `~/.claude.json`，`claude mcp list` 可验）：
+- `cognee`：语义记忆 ✅（wrapper `09-cognee/cognee-mcp-wrapper.sh` + DashScope；Claude+Codex 共享图谱）
+- `filesystem`：范围 `~/MoonzWorkspace` ✅
+- `playwright`：浏览器自动化 ✅
+- `context7`：实时库文档查询 ✅
+- `feishu`：飞书 ✅
+- `github`：⏸ 待 `GITHUB_TOKEN`（设后 `claude mcp add github -s user -e GITHUB_PERSONAL_ACCESS_TOKEN=... -- npx -y @modelcontextprotocol/server-github`）
+- `codegraph`：⏸ 代码库语义索引（项目需先 `codegraph init -i`，无 API Key）
 
 **记忆系统（双引擎 + Hook 注入）**：
 

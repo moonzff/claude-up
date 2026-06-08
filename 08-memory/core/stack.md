@@ -2,7 +2,7 @@
 OS: macOS (Apple Silicon) · Shell: zsh · 包管理: Homebrew (/opt/homebrew)
 Node: lts(mise) · Python: 系统3.9 + uv管理3.12 · Git/gh/rsync/uv/jq 已装
 Claude Code CLI: 2.1.x · Claude Desktop: 运行中
-MCP：fs✅ playwright✅ context7✅ github⚙️(需GITHUB_TOKEN) cognee✅(venv隔离·DashScope打通) codegraph⏸(待装) letta🚫(归档)
+MCP(注册在~/.claude.json,非settings.json)：fs✅ playwright✅ context7✅ feishu✅ cognee✅(wrapper,Claude+Codex共享图谱) github⏸(待TOKEN) codegraph⏸ letta🚫
 关键路径：
   ~/.claude/ → 部署目标（settings.json + CLAUDE.md + hooks/）
   ~/MoonzWorkspace/Claude_up/ → 源码与记忆层(08-memory)

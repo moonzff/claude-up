@@ -44,50 +44,7 @@
     ]
   },
 
-  "mcpServers": {
-    "filesystem": {
-      "command": "npx",
-      "args": [
-        "-y",
-        "@modelcontextprotocol/server-filesystem@latest",
-        "/Users/moonz/MoonzWorkspace"
-      ]
-    },
-    "playwright": {
-      "command": "npx",
-      "args": ["-y", "@playwright/mcp@latest"]
-    },
-    "context7": {
-      "command": "npx",
-      "args": ["-y", "@upstash/context7-mcp@latest"]
-    },
-    "github": {
-      "command": "npx",
-      "args": ["-y", "@modelcontextprotocol/server-github"],
-      "env": {
-        "GITHUB_PERSONAL_ACCESS_TOKEN": "${env:GITHUB_TOKEN}"
-      }
-    },
-    "cognee": {
-      "command": "/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.venv/bin/cognee-mcp",
-      "args": ["--transport", "stdio"],
-      "env": {
-        "LLM_API_KEY": "${env:DASHSCOPE_API_KEY}",
-        "LLM_PROVIDER": "openai",
-        "LLM_MODEL": "openai/qwen-plus",
-        "LLM_ENDPOINT": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "EMBEDDING_PROVIDER": "openai_compatible",
-        "EMBEDDING_API_KEY": "${env:DASHSCOPE_API_KEY}",
-        "EMBEDDING_MODEL": "text-embedding-v3",
-        "EMBEDDING_DIMENSIONS": "1024",
-        "EMBEDDING_BATCH_SIZE": "10",
-        "EMBEDDING_ENDPOINT": "https://dashscope.aliyuncs.com/compatible-mode/v1",
-        "DATA_ROOT_DIRECTORY": "/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.data_storage",
-        "SYSTEM_ROOT_DIRECTORY": "/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.cognee_system",
-        "ENABLE_BACKEND_ACCESS_CONTROL": "false"
-      }
-    }
-  },
+  "_mcpServers_note": "MCP server 注册已迁至 ~/.claude.json（用 claude mcp add -s user）。Claude Code v2.1.x 不读 settings.json 的 mcpServers，故此处不配置。cognee 用 09-cognee/cognee-mcp-wrapper.sh（密钥零硬编码）；github 待 GITHUB_TOKEN 后 claude mcp add。详见 08-memory/archive/lessons.md L024。",
 
   "_pending_mcpServers": {
     "_note": "需要先在 Mac 安装后端再迁入 mcpServers：codegraph 需安装 codegraph 二进制并在项目内 `codegraph init -i`。cognee 已启用并端到端打通（venv 隔离 09-cognee/.venv，DASHSCOPE_API_KEY 见 .zshrc + launchctl）。",

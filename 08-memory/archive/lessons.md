@@ -138,3 +138,7 @@
 <!-- LES | id: L023 | confidence: 0.9 | reinforced: 1 | date: 2026-06-08 | concepts: [debugging, cli-wrapper, python-api, traceback, error-hiding] -->
 [2026-06-08] [Claude_up/排障] **CLI wrapper 吞异常时，降到底层库的 Python API 直接调用抓堆栈**：cognee-cli 把所有异常压成一句 "Please refer to our docs"，连官方 `--debug` flag 都不吐 traceback，排障卡死。绕过 CLI 写十来行 Python（`import cognee` + `asyncio.run(...)` + `traceback.print_exc()`）直接调 add/cognify，立刻拿到真实异常（`litellm.BadRequestError`）。通用模式：诊断 CLI 工具失败时若 CLI 隐藏错误，找它底层的库 API 在 Python 里直接调，错误无处可藏。
 <!-- /LES -->
+
+<!-- LES | id: L024 | confidence: 0.95 | reinforced: 1 | date: 2026-06-08 | concepts: [mcp, claude-code, codex, registration, claude.json, settings.json, wrapper, cross-tool] -->
+[2026-06-08] [Claude_up/MCP机制] **MCP server 注册在 `~/.claude.json`（用 `claude mcp add`），不是 `~/.claude/settings.json` 的 mcpServers**——Claude Code v2.1.x 根本不读 settings.json 的 mcpServers 块。之前 filesystem/playwright/context7/github/cognee 全配在 settings.json，结果一个都没加载（`claude mcp list` 只有 feishu），这才是"cognee 从没出现"的真根因（比 L022 配置内容更底层），**推翻旧 L003**（"settings.json mcpServers 只对 CLI 生效"——错的）。正确做法：`claude mcp add <name> -s user -- <cmd> <args...>`。带密钥的 server 用 wrapper 脚本从环境/.zshrc 读 key（`-- /path/wrapper.sh`），~/.claude.json 里 env `{}` 零硬编码。**跨工具**：Codex CLI 用 `~/.codex/config.toml` 的 `[mcp_servers.<name>]`（command/args/startup_timeout_sec）指向同一 wrapper → Claude 与 Codex 共享同一 cognee 知识图谱。经典 Desktop 纯聊天走 `claude_desktop_config.json` 的 mcpServers（与 code session 的 ~/.claude.json 分离）。
+<!-- /LES -->

@@ -8,7 +8,14 @@
 > - **settings.json 修正 5 处 ✅**（已 diff 预览 + 用户确认 + 备份）：LLM_MODEL 加前缀 / EMBEDDING_PROVIDER→openai_compatible / +EMBEDDING_DIMENSIONS=1024 / +EMBEDDING_BATCH_SIZE=10 / +ENABLE_BACKEND_ACCESS_CONTROL=false。
 > - **MCP 握手验证 ✅**：用该配置启动 cognee-mcp，12 工具就绪、无报错（B4 极可能直接 Connected）。
 > - **Part C 文档 ✅**：mac-claude/CLAUDE.md 记忆章节（hook 接管 + 工具名 `mcp__cognee__recall`/`remember` 校正）· settings.json profile 同步 · archive decisions(+6)/events(+1)/lessons(L022/L023)。
-> - **剩余**：B4（用户重启 Desktop + `claude mcp list` 验证 Connected）· git commit（待用户明确授权，未提交）。
+> - **首轮提交**：b1732bc（记忆系统落地）已推 GitHub。
+>
+> **B4 + MCP 机制纠偏（第二轮，本次完成）**：
+> - **真根因**：Claude Code v2.1.x **不读** `~/.claude/settings.json` 的 mcpServers（5 个 server 一个没加载，`claude mcp list` 仅 feishu）。settings.json 配 cognee 从来没生效——比配置内容更底层。
+> - **正解**：`claude mcp add <name> -s user -- ...` 注册到 `~/.claude.json`。cognee/filesystem/playwright/context7 全部 ✓ Connected（github 待 GITHUB_TOKEN）。
+> - **密钥零硬编码**：cognee 用 `09-cognee/cognee-mcp-wrapper.sh`（env/.zshrc 读 key），~/.claude.json env `{}`。MCP search 实调返回准确召回。
+> - **跨工具**：Codex 经 `~/.codex/config.toml` 的 `[mcp_servers.cognee]` 共享同一知识图谱；经典 Desktop 加 `claude_desktop_config.json`（待 app 内验证）。
+> - **收尾**：lessons L024（推翻旧 L003）+ decisions + CLAUDE.md/stack.md 纠偏 + 清理 settings.json 死 mcpServers 块（→ 说明注释）。第二轮提交待推。
 
 ## 总目标
 两手抓修复 Claude 记忆：
