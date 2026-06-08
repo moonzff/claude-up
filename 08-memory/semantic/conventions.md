@@ -4,7 +4,7 @@
 
 ---
 
-<!-- CONV | id: C001 | confidence: 0.95 | domain: PowerShell | last: 2026-05-09 -->
+<!-- CONV | id: C001 | confidence: 0.95 | domain: PowerShell(Windows时代,Mac不适用) | last: 2026-05-09 -->
 ## [C001] PowerShell 字符串：含中文用内联，不用 here-string
 **约定**：PowerShell 脚本中含中文内容时，使用内联反引号字符串（`` "`n...内容..." ``），
 不使用 here-string（`@"..."@`）。
@@ -25,7 +25,7 @@ $msg = "`n中文内容`n"
 <!-- CONV | id: C002 | confidence: 0.90 | domain: Claude_up/文件命名 | last: 2026-05-09 -->
 ## [C002] 研究档案命名：YYYY-MM-DD_research_vX.Y_描述.md
 **约定**：研究类文档统一格式：`YYYY-MM-DD_research_v版本_描述词.md`
-**路径**：`D:\MoonzWorkspace\Research\Claude_up\`
+**路径**：`~/MoonzWorkspace/Research/Claude_up/`（原 Windows `D:\MoonzWorkspace\Research\Claude_up\`）
 **示例**：`20260507_research_v0.1_environment-survey.md`
 <!-- /CONV -->
 

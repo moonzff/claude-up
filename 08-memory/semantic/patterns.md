@@ -4,12 +4,12 @@
 
 ---
 
-<!-- PAT | id: P001 | confidence: 0.95 | reinforced: 3 | last: 2026-05-09 -->
+<!-- PAT | id: P001 | confidence: 0.95 | reinforced: 4 | last: 2026-06-08 -->
 ## [P001] 环境边界优先验证
 **规律**：引入任何新工具/MCP/服务前，必须先确认它在目标执行环境（Cowork vs CLI）里能运行。
 **证据**：
 - Letta MCP → Cowork 无法访问 localhost:8283（教训+1）
-- settings.json mcpServers → 只对 CLI 生效，Cowork 独立体系（教训+1）
+- settings.json mcpServers → 实测 Claude Code v2.1.x **根本不读**（旧"只对 CLI 生效"认知已被 L024 推翻）；MCP 须 `claude mcp add` → `~/.claude.json`（教训+1，2026-06-08 强化）
 - agentmemory Hooks → 只在 CLI 触发，Cowork 无效（教训+1）
 **行动**：每次决策是否安装某工具时，第一个问题："在 Cowork 里能用吗？"
 <!-- /PAT -->
