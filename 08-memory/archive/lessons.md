@@ -145,4 +145,9 @@
 
 <!-- LES | id: L025 | confidence: 0.85 | reinforced: 1 | date: 2026-06-08 | concepts: [cognee, mcp, lock, ladybug, process-leak, concurrency] -->
 [2026-06-08] [Claude_up/运维] **cognee-mcp 进程退出不清理 + graph DB 单写锁**：每次 `claude mcp list` 健康检查 / MCP 测试都 spawn 一个 cognee-mcp，客户端断开后进程常**残留**（本会话累积 6 个孤儿）。ladybug/kuzu graph DB 是**单写锁**，残留进程占着锁 → 其它 cognee 访问（Python API / CLI / 另一 host）报 `Could not set lock on file cognee_graph_ladybug`。影响：Claude + Codex + Desktop 都注册了 cognee 共享同一图谱，**并发使用会撞锁**。排查 `ps -eo pid,command | grep 09-cognee/.venv`；清理 `pkill -f "09-cognee/.venv/bin/cognee-mcp"`。规避：同一时刻只让一个 host 用 cognee；批量 re-sync 先清残留进程，或走当前会话已连的 MCP 工具（经持锁进程操作，避开冲突）。
+→ 根治方案见 **L026**（单 API server + 瘦客户端）；本条手动规避降级为"API server 未运行时的回退"。
+<!-- /LES -->
+
+<!-- LES | id: L026 | confidence: 0.90 | reinforced: 1 | date: 2026-06-08 | concepts: [cognee, concurrency, api-server, launchd, lock, architecture, require-authentication] -->
+[2026-06-08] [Claude_up/架构] **cognee 并发根治：单 API server + 瘦客户端**（取代 L025 手动规避）。问题见 L025（kuzu 单写锁 + 多 host 撞锁）。解法：常驻 1 个 cognee FastAPI server（`09-cognee/cognee-api-server.sh`，launchd `com.moonz.cognee-api`，绑 `127.0.0.1:8000`）**独占**文件库；所有 cognee-mcp 经 wrapper 加 `--api-url http://127.0.0.1:8000` 变 HTTP 瘦客户端，**只有 API server 碰 DB** → Claude/Codex/Desktop 真并发、无锁冲突（实测 3 并发 search 全 200、0 锁错）。鉴权：`REQUIRE_AUTHENTICATION=false` + `ENABLE_BACKEND_ACCESS_CONTROL=false`（access-control 关着才允许关 auth，否则被强制开）→ 无需 token（localhost 自用）。保留现有 kuzu/lancedb 数据**零迁移**，比换 Neo4j 轻。关键文件：cognee-api-server.sh / com.moonz.cognee-api.plist / cognee-mcp-wrapper.sh(--api-url)。运维：`launchctl list|grep cognee` 看状态；server 没起时客户端会连不上 8000（回退 L025）。
 <!-- /LES -->

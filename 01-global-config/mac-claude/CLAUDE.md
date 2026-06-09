@@ -126,7 +126,7 @@
 | 文件层 | Read/Edit/Grep | 结构化基础上下文 | Git 版本控制，可读可查 |
 | SessionStart Hook | `~/.claude/hooks/inject-memory.sh` | 每会话确定性注入 core 四块 | 零依赖、机制保底，不靠 AI 自觉 |
 
-> cognee 运行态：venv `09-cognee/.venv`（Python 3.12 · cognee 1.1.2）+ `~/.claude/settings.json` 的 cognee `env` 块；数据落 `09-cognee/.data_storage` + `.cognee_system`。接 DashScope 的配置坑见 lessons **L022**（litellm 前缀 / `openai_compatible` / 维度 1024 / batch ≤10）。
+> cognee 运行态（**并发架构**，见 L026）：launchd `com.moonz.cognee-api` 常驻 1 个 FastAPI server（`09-cognee/cognee-api-server.sh`，`127.0.0.1:8000`，`REQUIRE_AUTHENTICATION=false` 无 token）**独占**文件库；各 host 的 cognee-mcp 经 `cognee-mcp-wrapper.sh`（`--api-url`）瘦客户端委托 → Claude/Codex/Desktop **并发无锁冲突**。数据 `09-cognee/.data_storage`+`.cognee_system`；DashScope 配置坑见 **L022**（litellm 前缀 / `openai_compatible` / 维度 1024 / batch ≤10）。运维：`launchctl list | grep cognee` 看状态；server 没起则客户端连不上 8000（回退见 L025）。
 
 | 文件层级 | 路径 | 用途 |
 |---------|------|------|

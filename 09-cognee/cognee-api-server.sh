@@ -1,11 +1,9 @@
 #!/bin/bash
-# cognee MCP 启动 wrapper — 注入已验证的 DashScope 配置。
-# 密钥从环境变量读取（CLI 走 .zshrc / GUI 走 launchctl），绝不硬编码进任何配置文件。
-# 注册方式：claude mcp add cognee -s user -- <本脚本绝对路径>
-
+# cognee FastAPI server — 独占文件库（kuzu+lancedb+sqlite），供所有 cognee-mcp 客户端
+# 经 --api-url 委托，实现 Claude/Codex/Desktop 并发访问同一知识图谱（根治单写锁）。
+# 由 launchd 守护常驻；密钥从环境/.zshrc 读，零硬编码。
 set -u
 
-# ── 密钥：优先用继承的环境变量，缺失则从 ~/.zshrc 兜底读取 ──
 KEY="${DASHSCOPE_API_KEY:-}"
 if [ -z "$KEY" ] && [ -f "$HOME/.zshrc" ]; then
   KEY="$(grep -m1 'DASHSCOPE_API_KEY' "$HOME/.zshrc" | sed -E 's/.*DASHSCOPE_API_KEY="?([^"]*)"?.*/\1/')"
@@ -24,7 +22,8 @@ export EMBEDDING_ENDPOINT="https://dashscope.aliyuncs.com/compatible-mode/v1"
 export DATA_ROOT_DIRECTORY="/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.data_storage"
 export SYSTEM_ROOT_DIRECTORY="/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.cognee_system"
 export ENABLE_BACKEND_ACCESS_CONTROL="false"
+export REQUIRE_AUTHENTICATION="false"
+export HTTP_API_HOST="127.0.0.1"
+export HTTP_API_PORT="8000"
 
-# 并发模式：连到常驻 cognee API server（独占文件库），本进程变 HTTP 瘦客户端，
-# 不直接碰 DB → Claude/Codex/Desktop 可同时用，无单写锁冲突。
-exec /Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.venv/bin/cognee-mcp --transport stdio --api-url http://127.0.0.1:8000
+exec /Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.venv/bin/python -m cognee.api.client

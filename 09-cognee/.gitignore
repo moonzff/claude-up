@@ -6,4 +6,6 @@ graph_data/
 .data_storage/
 .cognee_system/
 .venv/
+*.log
+.api-server.log
 

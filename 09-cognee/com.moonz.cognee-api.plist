@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<!--
+  cognee API server LaunchAgent — 常驻 cognee FastAPI（独占文件库），
+  供 Claude/Codex/Desktop 的 cognee-mcp 经 --api-url 并发委托。
+  部署：cp 到 ~/Library/LaunchAgents/ 后 launchctl load -w。
+-->
+<plist version="1.0">
+<dict>
+  <key>Label</key>
+  <string>com.moonz.cognee-api</string>
+  <key>ProgramArguments</key>
+  <array>
+    <string>/bin/bash</string>
+    <string>/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/cognee-api-server.sh</string>
+  </array>
+  <key>RunAtLoad</key>
+  <true/>
+  <key>KeepAlive</key>
+  <true/>
+  <key>ThrottleInterval</key>
+  <integer>10</integer>
+  <key>StandardOutPath</key>
+  <string>/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.api-server.log</string>
+  <key>StandardErrorPath</key>
+  <string>/Users/moonz/MoonzWorkspace/Claude_up/09-cognee/.api-server.log</string>
+  <key>ProcessType</key>
+  <string>Background</string>
+</dict>
+</plist>
